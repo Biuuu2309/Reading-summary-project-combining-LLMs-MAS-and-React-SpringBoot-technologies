@@ -15,6 +15,7 @@ public class messageservice {
     private messagerepository messagerepository;
     public message_user_ai createRequest(messagecreationrequest request) {
         message_user_ai message_user_ai = new message_user_ai();
+        message_user_ai.setUser_id(request.getUser_id());
         message_user_ai.setRole(request.getRole());
         message_user_ai.setMessage(request.getMessage());
         message_user_ai.setCreated_at(request.getCreated_at());
