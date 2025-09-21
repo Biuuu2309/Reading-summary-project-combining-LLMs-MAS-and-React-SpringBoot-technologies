@@ -16,6 +16,8 @@ import com.example.my_be.dto.request.usercreationrequest;
 import com.example.my_be.dto.request.userupdaterequest;
 import com.example.my_be.entity.user;
 import com.example.my_be.service.userservice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/user")
@@ -23,24 +25,24 @@ public class usercontroller {
     @Autowired
     private userservice userservice;
     @PostMapping
-    public user createUser(@RequestBody usercreationrequest request) {
-        return userservice.createRequest(request);
+    public ResponseEntity<user> createUser(@RequestBody usercreationrequest request) {
+        return new ResponseEntity<>(userservice.createRequest(request), HttpStatus.CREATED);
     }
     @GetMapping
-    public List<user> getUsers() {
-        return userservice.getUsers();
+    public ResponseEntity<List<user>> getUsers() {
+        return new ResponseEntity<>(userservice.getUsers(), HttpStatus.OK);
     }
     @GetMapping("/{user_id}")
-    public user getUserById(@PathVariable("user_id") String user_id) {
-        return userservice.getUserById(user_id);
+    public ResponseEntity<user> getUserById(@PathVariable("user_id") String user_id) {
+        return new ResponseEntity<>(userservice.getUserById(user_id), HttpStatus.OK);
     }
     @PutMapping("/{user_id}")
-    public user updateUser(@PathVariable("user_id") String user_id, @RequestBody userupdaterequest request) {
-        return userservice.updateUser(user_id, request);
+    public ResponseEntity<user> updateUser(@PathVariable("user_id") String user_id, @RequestBody userupdaterequest request) {
+        return new ResponseEntity<>(userservice.updateUser(user_id, request), HttpStatus.OK);
     }
     @DeleteMapping("/{user_id}")
-    public String deleteUser(@PathVariable("user_id") String user_id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("user_id") String user_id) {
         userservice.deleteUser(user_id);
-        return "User deleted successfully";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
