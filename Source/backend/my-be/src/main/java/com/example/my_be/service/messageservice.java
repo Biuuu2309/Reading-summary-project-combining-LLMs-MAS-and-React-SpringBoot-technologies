@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.my_be.dto.request.messagecreationrequest;
-import com.example.my_be.entity.message_user_ai;
+import com.example.my_be.model.message_user_ai;
 import com.example.my_be.repository.messagerepository;
 
 @Service

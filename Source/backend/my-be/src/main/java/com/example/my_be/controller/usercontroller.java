@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.my_be.dto.request.usercreationrequest;
 import com.example.my_be.dto.request.userupdaterequest;
-import com.example.my_be.entity.user;
+import com.example.my_be.model.user;
 import com.example.my_be.service.userservice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

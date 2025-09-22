@@ -1,4 +1,6 @@
-package com.example.my_be.entity;
+package com.example.my_be.model;
+
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,13 +14,13 @@ public class summary {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String summary_id;
-    private String approved_at;
+    private LocalDateTime approved_at;
     private String content;
-    private String created_at;
+    private LocalDateTime created_at;
     private String grade;
     private String image_url;
     private String method;
-    private String read_count;
+    private Integer read_count;
     private String status;
     private String summary_content;
     private String title;
@@ -28,13 +30,13 @@ public class summary {
     public String getSummary_id() {
         return summary_id;
     }
-    public String getApproved_at() {
+    public LocalDateTime getApproved_at() {
         return approved_at;
     }
     public String getContent() {
         return content;
     }
-    public String getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
     public String getGrade() {
@@ -46,7 +48,7 @@ public class summary {
     public String getMethod() {
         return method;
     }
-    public String getRead_count() {
+    public Integer getRead_count() {
         return read_count;
     }
     public String getStatus() {
@@ -64,13 +66,13 @@ public class summary {
     public void setSummary_id(String summary_id) {
         this.summary_id = summary_id;
     }
-    public void setApproved_at(String approved_at) {
+    public void setApproved_at(LocalDateTime approved_at) {
         this.approved_at = approved_at;
     }
     public void setContent(String content) {
         this.content = content;
     }
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
     public void setGrade(String grade) {
@@ -82,7 +84,7 @@ public class summary {
     public void setMethod(String method) {
         this.method = method;
     }
-    public void setRead_count(String read_count) {
+    public void setRead_count(Integer read_count) {
         this.read_count = read_count;
     }
     public void setStatus(String status) {
@@ -97,7 +99,7 @@ public class summary {
     public void setCreated_by(String created_by) {
         this.created_by = created_by;
     }
-    public summary(String summary_id, String approved_at, String content, String created_at, String grade, String image_url, String method, String read_count, String status, String summary_content, String title, String created_by) {
+    public summary(String summary_id, LocalDateTime approved_at, String content, LocalDateTime created_at, String grade, String image_url, String method, Integer read_count, String status, String summary_content, String title, String created_by) {
         this.summary_id = summary_id;
         this.approved_at = approved_at;
         this.content = content;

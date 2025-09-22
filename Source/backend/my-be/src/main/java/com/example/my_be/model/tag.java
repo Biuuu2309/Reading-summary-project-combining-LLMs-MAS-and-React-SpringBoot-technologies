@@ -1,4 +1,4 @@
-package com.example.my_be.entity;
+package com.example.my_be.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -19,7 +19,7 @@ public class tag {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)// 
 
-    private String tagId; // Primary key
+    private String tag_id; // Primary key
 
     @Column(nullable = false, unique = true)
     private String name; // Unique name of the tag

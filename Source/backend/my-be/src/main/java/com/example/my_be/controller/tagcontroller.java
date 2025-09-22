@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.my_be.entity.tag;
+import com.example.my_be.model.tag;
 import com.example.my_be.service.tagservice;
 
 @RestController

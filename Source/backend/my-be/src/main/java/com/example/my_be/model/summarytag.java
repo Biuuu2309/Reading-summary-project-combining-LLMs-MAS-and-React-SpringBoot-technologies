@@ -1,5 +1,6 @@
-package com.example.my_be.entity;
+package com.example.my_be.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,9 +26,11 @@ public class summarytag {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "summary_id", nullable = false)
+    @JsonIgnore
     private summary summary; // Reference to the summary
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
+    @JsonIgnore
     private tag tag; // Reference to the tag
 }

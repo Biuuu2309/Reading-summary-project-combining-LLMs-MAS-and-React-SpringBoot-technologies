@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.my_be.entity.summary;
-import com.example.my_be.entity.summarytag;
-import com.example.my_be.entity.tag;
+import com.example.my_be.dto.request.summarytagcreationrequest;
+import com.example.my_be.model.summary;
+import com.example.my_be.model.summarytag;
+import com.example.my_be.model.tag;
 import com.example.my_be.service.summaryservice;
 import com.example.my_be.service.summarytagservice;
 import com.example.my_be.service.tagservice;
@@ -36,29 +37,33 @@ public class summarytagcontroller {
     // Get all tags for a specific summary
     @GetMapping("/summary/{summaryId}")
     public ResponseEntity<List<summarytag>> getTagsBySummary(@PathVariable String summaryId) {
-        Optional<summary> summary = summaryService.getSummaryById(summaryId);
-        if (summary.isPresent()) {
-            List<summarytag> tags = summaryTagService.getTagsBySummary(summary.get());
+        try {
+            summary summary = summaryService.getSummaryById(summaryId);
+            List<summarytag> tags = summaryTagService.getTagsBySummary(summary);
             return new ResponseEntity<>(tags, HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // Get all summaries associated with a specific tag
     @GetMapping("/tag/{tagId}")
     public ResponseEntity<List<summarytag>> getSummariesByTag(@PathVariable String tagId) {
-        Optional<tag> tag = tagService.getTagByName(tagId);
-        if (tag.isPresent()) {
-            List<summarytag> summaries = summaryTagService.getSummariesByTag(tag.get());
-            return new ResponseEntity<>(summaries, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<tag> tag = tagService.getTagById(tagId);
+        if (tag.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<summarytag> summaries = summaryTagService.getSummariesByTag(tag.get());
+        return new ResponseEntity<>(summaries, HttpStatus.OK);
     }
 
     // Create a new association between a summary and a tag
     @PostMapping
-    public ResponseEntity<summarytag> createSummaryTag(@RequestBody summarytag summaryTag) {
-        summarytag createdAssociation = summaryTagService.createSummaryTag(summaryTag);
+    public ResponseEntity<summarytag> createSummaryTag(@RequestBody summarytagcreationrequest request) {
+        summary summary = summaryService.getSummaryById(request.getSummary_id());
+        tag tag = tagService.getTagById(request.getTag_id()).orElseThrow(() -> new RuntimeException("Tag not found"));
+        summarytag association = new summarytag();
+        association.setSummary(summary);
+        association.setTag(tag);
+        summarytag createdAssociation = summaryTagService.createSummaryTag(association);
         return new ResponseEntity<>(createdAssociation, HttpStatus.CREATED);
     }
 
@@ -66,10 +71,8 @@ public class summarytagcontroller {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSummaryAssociation(@PathVariable String id) {
         Optional<summarytag> existingAssociation = summaryTagService.getSummaryTagById(id);
-        if (existingAssociation.isPresent()) {
-            summaryTagService.deleteSummaryTag(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (existingAssociation.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        summaryTagService.deleteSummaryTag(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

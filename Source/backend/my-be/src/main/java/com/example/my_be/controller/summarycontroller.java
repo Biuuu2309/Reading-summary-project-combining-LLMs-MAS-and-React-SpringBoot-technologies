@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.my_be.dto.request.summarycreationrequest;
 import com.example.my_be.dto.request.summaryupdaterequest;
-import com.example.my_be.entity.summary;
+import com.example.my_be.model.summary;
 import com.example.my_be.service.summaryservice;
 
 @RestController

@@ -74,3 +74,15 @@ CREATE TABLE summary_tags (
     FOREIGN KEY (summary_id) REFERENCES summaries(summary_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON UPDATE CASCADE ON DELETE CASCADE
 )
+
+CREATE TABLE conversations (
+	message_id NVARCHAR(255),
+    user_id NVARCHAR(255),
+    role NVARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (message_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
+)
+
+ALTER TABLE read_history MODIFY id BIGINT

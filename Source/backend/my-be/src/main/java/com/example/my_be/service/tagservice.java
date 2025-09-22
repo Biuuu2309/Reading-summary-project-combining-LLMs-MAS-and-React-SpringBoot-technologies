@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.my_be.entity.tag;
+import com.example.my_be.model.tag;
 import com.example.my_be.repository.tagrepository;
 
 @Service
@@ -21,16 +21,8 @@ public class tagservice {
         return tagrepository.findById(id);
     }
 
-    public Optional<tag> getTagByName(String name) {
-        return tagrepository.findByName(name);
-    }
-
     public List<tag> getTags() {
         return tagrepository.findAll();
-    }
-
-    public Optional<tag> getTagById(String id) {
-        return tagrepository.findById(id);
     }
 
     public Optional<tag> getTagByName(String name) {
