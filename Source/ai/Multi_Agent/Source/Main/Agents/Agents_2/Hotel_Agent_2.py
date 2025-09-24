@@ -13,7 +13,7 @@ import requests
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from memory.memory import memory_manager
+from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manager
 
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"

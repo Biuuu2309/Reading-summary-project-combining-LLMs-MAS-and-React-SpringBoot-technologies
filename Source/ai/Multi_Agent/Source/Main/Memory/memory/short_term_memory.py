@@ -1,8 +1,8 @@
-from typing import TypedDict, List, Dict, Any, Optional
+from typing import List, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 import json
-from .long_term_memory import long_term_memory
+from Source.ai.Multi_Agent.Source.Main.Memory.memory.long_term_memory import long_term_memory
 
 # Short-Term Memory System
 @dataclass
