@@ -57,6 +57,9 @@ class MemoryManager:
         self.active_sessions: Dict[str, ShortTermMemory] = {}
         self.memory = Memory()
     
+    def _generate_session_id(self) -> str:
+        return f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
     def get_memory(self, user_id: str = "default_user") -> ShortTermMemory:
         """Lấy hoặc tạo memory cho user"""
         if user_id not in self.active_sessions:
@@ -94,6 +97,27 @@ class MemoryManager:
 
     def get_session_id(self, user_id: str = "default_user") -> str:
         return self.get_memory(user_id).session_id
+
+    def start_new_session(
+        self,
+        user_id: str = "default_user",
+        clear_history: bool = True,
+        keep_preferences: bool = True,
+    ) -> str:
+        """Tạo session mới cho user hiện tại và (tuỳ chọn) xoá lịch sử ngắn hạn.
+        - clear_history=True: xoá conversation_history và booking_info để không lẫn phiên cũ
+        - keep_preferences=True: giữ lại user_preferences giữa các phiên (thường hữu ích)
+        Trả về session_id mới.
+        """
+        stm = self.get_memory(user_id)
+        if clear_history:
+            stm.conversation_history = []
+            stm.booking_info = {}
+        if not keep_preferences:
+            stm.user_preferences = {}
+        stm.session_id = self._generate_session_id()
+        stm.last_updated = datetime.now()
+        return stm.session_id
 
     def clear_memory(self, user_id: str = "default_user", also_long_term: bool = False) -> None:
         stm = self.get_memory(user_id)
