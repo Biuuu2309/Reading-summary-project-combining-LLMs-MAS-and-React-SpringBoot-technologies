@@ -24,8 +24,9 @@ def analyze_travel(text: str) -> str:
     memory_manager.add_message(role="user", content=f"[Tool Input][TravelAnalyzer] {text}", user_id=user_id)
     prompt = (
         f"{context}\n\n"
-        f"Nhiệm vụ: Phân tích lịch trình du lịch của đoạn văn sau, chỉ trả về 1 từ 'Positive', 'Negative' hoặc 'Neutral'.\n"
-        f"Lịch trình du lịch: {text}"
+        f"Nhiệm vụ: Tạo lịch trình du lịch, đề xuất địa điểm du lịch, hoạt động, ẩm thực.\n"
+        f"Lịch trình du lịch: {text}\n"
+        f"Trả về dưới dạng JSON với các key: destination, activity, food, accommodation."
     )
     analysis_msg = llm.invoke(prompt)
     analysis = analysis_msg.content.strip()
@@ -35,5 +36,5 @@ def analyze_travel(text: str) -> str:
 travel_tool = Tool(
     name="TravelAnalyzer",
     func=analyze_travel,
-    description="Useful for analyzing the travel plan of a given text. Input should be a string."
+    description="Useful for creating a travel plan of a given text. Input should be a string. Return in Vietnamese."
 )
