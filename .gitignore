@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+*.mp4
+*.mp3
 
 # Log file
 *.log
