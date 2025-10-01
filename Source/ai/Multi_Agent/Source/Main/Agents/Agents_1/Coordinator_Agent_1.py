@@ -32,24 +32,28 @@ COORDINATOR_SYSTEM = """Bạn là Coordinator Agent thông minh. Nhiệm vụ:
 def coordinator_agent(state: AgentState):
     messages = state["messages"]
     
-    # Xử lý trường hợp messages rỗng
+    # Khởi tạo nếu chưa có message
     if not messages:
         response = AIMessage(content="Xin chào! Tôi là trợ lý du lịch đa nhiệm. Tôi có thể giúp gì cho chuyến đi của bạn?")
         return {
             "messages": [response],
-            "current_agent": "travel_agent",
+            "current_agent": "END",  # Chờ user nhập
             "needs_user_input": True,
             "conversation_stage": "greeting"
         }
     
     last_message = messages[-1]
     
+    # Nếu đang cần user input thì đừng xử lý thêm
     if state.get("needs_user_input", False):
-        return state
+        return {
+            **state,
+            "current_agent": "END"  # Chặn vòng lặp vô hạn
+        }
     
     if isinstance(last_message, HumanMessage):
         user_input = last_message.content
-                
+        
         prompt = [
             SystemMessage(content=COORDINATOR_SYSTEM),
             *messages[:-1],
@@ -57,9 +61,8 @@ def coordinator_agent(state: AgentState):
         ]
         
         response = llm.invoke(prompt)
-        
-        # Xác định agent tiếp theo
         content = response.content.lower()
+        
         if any(x in content for x in ["khách sạn", "phòng", "nghỉ", "hotel", "resort"]):
             next_agent = "hotel_agent"
         elif any(x in content for x in ["máy bay", "chuyến bay", "vé", "flight", "bay"]):
@@ -67,19 +70,22 @@ def coordinator_agent(state: AgentState):
         elif any(x in content for x in ["du lịch", "lịch trình", "thăm quan", "travel", "điểm đến"]):
             next_agent = "travel_agent"
         else:
-            next_agent = "coordinator"
-            
+            # Hỏi lại thay vì lặp
+            return {
+                "messages": messages + [AIMessage(content="Bạn muốn hỏi về du lịch, khách sạn hay vé máy bay?")],
+                "current_agent": "END",
+                "needs_user_input": True
+            }
+
         return {
             "messages": messages + [response],
             "current_agent": next_agent,
-            "needs_user_input": True,
+            "needs_user_input": False,  # Cho phép agent kế tiếp xử lý
             "conversation_stage": state.get("conversation_stage", "planning")
         }
     
-    # Trường hợp không phải HumanMessage
     return {
         "messages": messages,
-        "current_agent": "coordinator",
-        "needs_user_input": True,
-        "conversation_stage": state.get("conversation_stage", "greeting")
+        "current_agent": "END",
+        "needs_user_input": True
     }
