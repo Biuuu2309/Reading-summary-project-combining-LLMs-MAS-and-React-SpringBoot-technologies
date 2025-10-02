@@ -12,7 +12,7 @@ class Memory:
         self.session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
     def add_message(self, role, content, save_to_long_term=True):
-        """Thêm tin nhắn vào memory và optionally vào long-term storage"""
+        #Thêm tin nhắn vào memory và optionally vào long-term storage
         timestamp = datetime.now().isoformat()
         message_entry = {
             "role": role,
@@ -31,7 +31,7 @@ class Memory:
             long_term_memory.add_memory(self.session_id, role, content, metadata)
     
     def get_conversation_context(self, current_input):
-        """Lấy ngữ cảnh từ cả short-term và long-term memory"""
+        #Lấy ngữ cảnh từ cả short-term và long-term memory
         # Short-term context (recent messages)
         short_term_context = "\n".join(
             [f"{msg['role']}: {msg['content']}" 
@@ -46,7 +46,7 @@ class Memory:
         return f"{long_term_context}\n\nLịch sử gần đây:\n{short_term_context}"
     
     def clear_memory(self):
-        """Xóa cả short-term và long-term memory"""
+        #Xóa cả short-term và long-term memory
         self.conversation_history = []
         self.user_preferences = {}
         self.session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -66,8 +66,7 @@ class MemoryManager:
             self.active_sessions[user_id] = ShortTermMemory(user_id)
         return self.active_sessions[user_id]
 
-    # Unified helpers
-    def add_message(self, role: str, content: str, user_id: str = "default_user", save_to_long_term: bool = True) -> None:
+    def add_message(self, role: str, content: str, user_id: str = "default_user", save_to_long_term: bool = True) -> None: #
         """Thêm tin nhắn vào short-term và (tùy chọn) long-term."""
         stm = self.get_memory(user_id)
         stm.add_message(role=role, content=content, save_to_long_term=save_to_long_term)
@@ -104,11 +103,6 @@ class MemoryManager:
         clear_history: bool = True,
         keep_preferences: bool = True,
     ) -> str:
-        """Tạo session mới cho user hiện tại và (tuỳ chọn) xoá lịch sử ngắn hạn.
-        - clear_history=True: xoá conversation_history và booking_info để không lẫn phiên cũ
-        - keep_preferences=True: giữ lại user_preferences giữa các phiên (thường hữu ích)
-        Trả về session_id mới.
-        """
         stm = self.get_memory(user_id)
         if clear_history:
             stm.conversation_history = []
@@ -134,9 +128,6 @@ class MemoryManager:
         return session_ids
 
     def resume_session(self, session_id: str, user_id: str = "default_user", replay_last_n: Optional[int] = 20) -> int:
-        """Khôi phục hội thoại từ long-term vào short-term cho session_id cho trước.
-        Trả về số message đã nạp. Không ghi lại vào long-term để tránh trùng lặp.
-        """
         stm = self.get_memory(user_id)
         stm.session_id = session_id
 
