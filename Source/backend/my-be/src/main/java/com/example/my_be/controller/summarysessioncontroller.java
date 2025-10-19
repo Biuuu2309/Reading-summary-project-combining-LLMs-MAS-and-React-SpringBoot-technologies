@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,8 +41,7 @@ public class summarysessioncontroller {
     private summarysessionservice summarySessionService;
 
     // Inject the Gemini API key from application.properties
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
+    private String geminiApiKey = System.getenv("GEMINI_API_KEY");
 
     // Define the base Gemini API URL
     private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";

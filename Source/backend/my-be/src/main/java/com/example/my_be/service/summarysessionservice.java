@@ -47,9 +47,9 @@ public class summarysessionservice {
     public summarysessionservice(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
         String envUrl = System.getenv("CLOUDINARY_URL");
-        String cloudinaryUrl = envUrl != null && !envUrl.isEmpty()
-            ? envUrl
-            : "cloudinary://826574884188763:VAI7dQfAaN-LA-OLyqaUeSJNcb4@dsm5p4uql";
+        String cloudinaryKey = System.getenv("CLOUDINARY_API_KEY");
+        String cloudinarySecret = System.getenv("CLOUDINARY_API_KEY_SECRET");
+        String cloudinaryUrl = "cloudinary://" + cloudinaryKey + ":" + cloudinarySecret + "@" + envUrl;
         cloudinary = new Cloudinary(cloudinaryUrl);
     }
 
@@ -98,7 +98,7 @@ public class summarysessionservice {
     }
 
     public ImageUploadResult generateImageAndUploadToCloudinary(String content) {
-        String geminiApiKey = "AIzaSyDbtx_CpAdd46alXI4H0Q2_uqeexVRqwdU";
+        String geminiApiKey = System.getenv("GEMINI_API_KEY");
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
 
         JSONObject request = new JSONObject();
