@@ -5,6 +5,10 @@
 *.xlsx
 *.csv
 *.txt
+*.png
+*.jpg
+*.jpeg
+
 # Log file
 *.log
 
