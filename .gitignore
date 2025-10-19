@@ -8,7 +8,7 @@
 *.png
 *.jpg
 *.jpeg
-
+*.env
 # Log file
 *.log
 
