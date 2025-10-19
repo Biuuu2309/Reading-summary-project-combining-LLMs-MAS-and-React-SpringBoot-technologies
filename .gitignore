@@ -4,6 +4,7 @@
 *.mp3
 *.xlsx
 *.csv
+*.txt
 # Log file
 *.log
 
