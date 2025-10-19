@@ -7,20 +7,20 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.cloudinary.json.JSONArray;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -46,7 +46,10 @@ public class summarysessionservice {
     @Autowired
     public summarysessionservice(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-        String cloudinaryUrl = "cloudinary://958111468128942:F2GbvNKARO6LCKsieLXunauzJW4@dzyp5klti";
+        String envUrl = System.getenv("CLOUDINARY_URL");
+        String cloudinaryUrl = envUrl != null && !envUrl.isEmpty()
+            ? envUrl
+            : "cloudinary://826574884188763:VAI7dQfAaN-LA-OLyqaUeSJNcb4@dsm5p4uql";
         cloudinary = new Cloudinary(cloudinaryUrl);
     }
 
@@ -95,8 +98,8 @@ public class summarysessionservice {
     }
 
     public ImageUploadResult generateImageAndUploadToCloudinary(String content) {
-        String geminiApiKey = "AIzaSyB4GcRjMx9tGQ2ytkBHXY0pAwlNB264w7M";
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
+        String geminiApiKey = "AIzaSyDbtx_CpAdd46alXI4H0Q2_uqeexVRqwdU";
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
 
         JSONObject request = new JSONObject();
         JSONObject contents = new JSONObject();
@@ -206,7 +209,7 @@ public class summarysessionservice {
     }
 
     public summarysession startSession(String userId, String content, String method) {
-        user createdBy = userService.getUserById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user createdBy = userService.getUserById(userId);
 
         String contentHash = computeHash(content);
         Optional<summarysession> existingSession = summarySessionRepository

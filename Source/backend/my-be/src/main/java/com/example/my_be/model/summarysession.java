@@ -29,7 +29,7 @@ public class summarysession {
     private Long sessionId; // Unique ID for the session
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "user_id", nullable = false, columnDefinition = "varchar(255)")
     private user createdBy; // User who initiated this summary session
 
     @Column(nullable = false, columnDefinition = "MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
