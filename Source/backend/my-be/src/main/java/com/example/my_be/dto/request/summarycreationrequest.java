@@ -2,18 +2,22 @@ package com.example.my_be.dto.request;
 
 public class summarycreationrequest {
     public summarycreationrequest() { }
+    private String summary_id;
     private String approved_at;
     private String content;
     private String created_at;
     private String grade;
     private String image_url;
     private String method;
-    private String read_count;
+    private int read_count;
     private String status;
     private String summary_content;
     private String title;
     private String created_by;
 
+    public String getSummary_id() {
+        return summary_id;
+    }
     public String getApproved_at() {
         return approved_at;
     }
@@ -32,7 +36,7 @@ public class summarycreationrequest {
     public String getMethod() {
         return method;
     }
-    public String getRead_count() {
+    public int getRead_count() {
         return read_count;
     }
     public String getStatus() {
@@ -46,6 +50,9 @@ public class summarycreationrequest {
     }
     public String getCreated_by() {
         return created_by;
+    }
+    public void setSummary_id(String summary_id) {
+        this.summary_id = summary_id;
     }
     public void setApproved_at(String approved_at) {
         this.approved_at = approved_at;
@@ -65,7 +72,7 @@ public class summarycreationrequest {
     public void setMethod(String method) {
         this.method = method;
     }
-    public void setRead_count(String read_count) {
+    public void setRead_count(int read_count) {
         this.read_count = read_count;
     }
     public void setStatus(String status) {
@@ -80,7 +87,8 @@ public class summarycreationrequest {
     public void setCreated_by(String created_by) {
         this.created_by = created_by;
     }
-    public summarycreationrequest(String approved_at, String content, String created_at, String grade, String image_url, String method, String read_count, String status, String summary_content, String title, String created_by) {
+    public summarycreationrequest(String summary_id, String approved_at, String content, String created_at, String grade, String image_url, String method, int read_count, String status, String summary_content, String title, String created_by) {
+        this.summary_id = summary_id;
         this.approved_at = approved_at;
         this.content = content;
         this.created_at = created_at;

@@ -144,13 +144,7 @@ public class summarysessioncontroller {
     
             // Step 3: Extract and process the Gemini response
             JsonNode geminiJsonNode = mapper.readTree(geminiResponseBody);
-            String geminiText = geminiJsonNode.path("candidates")
-                                              .get(0)
-                                              .path("content")
-                                              .path("parts")
-                                              .get(0)
-                                              .path("text")
-                                              .asText();
+            String geminiText = geminiJsonNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
             System.out.println("Gemini generated text: " + geminiText);
     
             // Step 4: Remove Markdown formatting

@@ -46,4 +46,11 @@ public class summarycontroller {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/top10")
+public ResponseEntity<List<summarydto>> getTop10MostReadSummaries() {
+    List<summary> topSummaries = summaryservice.getTop10MostReadSummaries();
+    
+    // Map the entities to DTOs
+    return new ResponseEntity<>(topSummaries, HttpStatus.OK);
+}
 }
