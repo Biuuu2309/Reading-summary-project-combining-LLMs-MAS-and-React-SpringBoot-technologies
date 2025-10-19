@@ -2,7 +2,8 @@
 *.class
 *.mp4
 *.mp3
-
+*.xlsx
+*.csv
 # Log file
 *.log
 
