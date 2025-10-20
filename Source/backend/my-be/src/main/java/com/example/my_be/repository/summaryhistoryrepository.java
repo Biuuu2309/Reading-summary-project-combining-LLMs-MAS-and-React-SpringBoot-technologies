@@ -1,14 +1,15 @@
-package com.example.my_be.repository;
+package com.example.demo.repository;
+
+import com.example.demo.model.SummaryHistory;
+import com.example.demo.model.SummarySession;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.my_be.model.summaryhistory;
-import com.example.my_be.model.summarysession;
-
 @Repository
-public interface summaryhistoryrepository extends JpaRepository<summaryhistory, Long> {
-    List<summaryhistory> findBySession(summarysession session);
+public interface SummaryHistoryRepository extends JpaRepository<SummaryHistory, Long> {
+    // You can add custom queries if necessary
+    List<SummaryHistory> findBySession(SummarySession session); // Add this
 }

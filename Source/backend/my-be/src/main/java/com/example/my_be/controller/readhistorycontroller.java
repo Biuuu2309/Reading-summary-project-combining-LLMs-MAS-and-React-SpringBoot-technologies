@@ -1,53 +1,46 @@
-package com.example.my_be.controller;
+package com.example.demo.controller;
+
+import com.example.demo.model.ReadHistory;
+import com.example.demo.model.Summary;
+import com.example.demo.model.User;
+import com.example.demo.service.ReadHistoryService;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.SummaryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.my_be.dto.request.readhistorycreationrequest;
-import com.example.my_be.model.readhistory;
-import com.example.my_be.model.summary;
-import com.example.my_be.model.user;
-import com.example.my_be.repository.summaryrepository;
-import com.example.my_be.repository.userrepository;
-import com.example.my_be.service.readhistoryservice;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/readhistory")
-public class readhistorycontroller {
-    @Autowired
-    private readhistoryservice readHistoryService;
+@RequestMapping("/api/read-history")
+public class ReadHistoryController {
 
     @Autowired
-    private userrepository userRepository; // To fetch user details by ID
+    private ReadHistoryService readHistoryService;
 
     @Autowired
-    private summaryrepository summaryRepository; // To fetch summary details by ID
+    private UserRepository userRepository; // To fetch user details by ID
+
+    @Autowired
+    private SummaryRepository summaryRepository; // To fetch summary details by ID
 
     // ReadHistoryDTO with added fields for title and imageUrl
-    public static class readhistorydto {
+    public static class ReadHistoryDTO {
         private Long id;
-        private String user_id;
-        private String summary_id;
+        private String userId;
+        private String summaryId;
         private String title;      // Added field for title
         private String imageUrl;   // Added field for imageUrl
     
         // Constructor
-        public readhistorydto(Long id, String user_id, String summary_id, String title, String imageUrl) {
+        public ReadHistoryDTO(Long id, String userId, String summaryId, String title, String imageUrl) {
             this.id = id;
-            this.user_id = user_id;
-            this.summary_id = summary_id;
+            this.userId = userId;
+            this.summaryId = summaryId;
             this.title = title;
             this.imageUrl = imageUrl;
         }
@@ -61,20 +54,20 @@ public class readhistorycontroller {
             this.id = id;
         }
     
-        public String getUser_id() {
-            return user_id;
+        public String getUserId() {
+            return userId;
         }
     
-        public void setUser_id(String user_id) {
-            this.user_id = user_id;
+        public void setUserId(String userId) {
+            this.userId = userId;
         }
     
-        public String getSummary_id() {
-            return summary_id;
+        public String getSummaryId() {
+            return summaryId;
         }
     
-        public void setSummary_id(String summary_id) {
-            this.summary_id = summary_id;
+        public void setSummaryId(String summaryId) {
+            this.summaryId = summaryId;
         }
     
         public String getTitle() {
@@ -97,62 +90,43 @@ public class readhistorycontroller {
 
     // Endpoint to log a new read history
     @PostMapping("/log")
-    public ResponseEntity<readhistory> logReadHistory(@RequestParam String user_id, @RequestParam String summary_id) {
+    public ResponseEntity<ReadHistory> logReadHistory(@RequestParam String userId, @RequestParam String summaryId) {
         // Fetch the user and summary by their IDs
-        user user = userRepository.findById(user_id).orElse(null);
-        summary summary = summaryRepository.findById(summary_id).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+        Summary summary = summaryRepository.findById(summaryId).orElse(null);
 
         if (user == null || summary == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // If either user or summary not found
         }
 
         // Log the read history
-        readhistory readHistory = readHistoryService.logReadHistory(user, summary);
+        ReadHistory readHistory = readHistoryService.logReadHistory(user, summary);
 
         return new ResponseEntity<>(readHistory, HttpStatus.CREATED);
     }
 
-    // JSON variant: accepts application/json body with { user_id, summary_id }
-    @PostMapping(value = "/log", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<readhistorydto> logReadHistoryJson(@RequestBody readhistorycreationrequest request) {
-        user user = userRepository.findById(request.getUser_id()).orElse(null);
-        summary summary = summaryRepository.findById(request.getSummary_id()).orElse(null);
-        if (user == null || summary == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        readhistory readHistory = readHistoryService.logReadHistory(user, summary);
-        readhistorydto dto = new readhistorydto(
-            readHistory.getId(),
-            user.getUser_id(),
-            summary.getSummary_id(),
-            summary.getTitle(),
-            summary.getImage_url()
-        );
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }
-
     // Get all ReadHistory by user
-    @GetMapping("/user/{user_id}")
-    public ResponseEntity<List<readhistorydto>> getReadHistoryByUser(@PathVariable String user_id) {
-        user user = userRepository.findById(user_id).orElse(null);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ReadHistoryDTO>> getReadHistoryByUser(@PathVariable String userId) {
+        User user = userRepository.findById(userId).orElse(null);
     
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // If user not found
         }
     
-        List<readhistory> readHistories = readHistoryService.getReadHistoryByUser(user);
+        List<ReadHistory> readHistories = readHistoryService.getReadHistoryByUser(user);
     
         // Convert ReadHistory to ReadHistoryDTO to avoid lazy-loaded fields
-        List<readhistorydto> readHistoryDTOs = readHistories.stream()
+        List<ReadHistoryDTO> readHistoryDTOs = readHistories.stream()
             .map(readHistory -> {
                 // Get the associated Summary
-                summary summary = readHistory.getSummary();
-                return new readhistorydto(
+                Summary summary = readHistory.getSummary();
+                return new ReadHistoryDTO(
                     readHistory.getId(),
-                    readHistory.getUser().getUser_id(),
-                    readHistory.getSummary().getSummary_id(),
+                    readHistory.getUser().getUserId(),
+                    readHistory.getSummary().getSummaryId(),
                     summary.getTitle(),
-                    summary.getImage_url()
+                    summary.getImageUrl()
                 );
             })
             .collect(Collectors.toList());

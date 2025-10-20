@@ -1,4 +1,7 @@
-package com.example.my_be.repository;
+package com.example.demo.repository;
+
+import com.example.demo.model.SummarySession;
+import com.example.demo.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,13 +9,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.my_be.model.summarysession;
-import com.example.my_be.model.user;
-
 @Repository
-public interface summarysessionrepository extends JpaRepository<summarysession, String> {
-    Optional<summarysession> findByCreatedByAndContentHash(user createdBy, String contentHash);
+public interface SummarySessionRepository extends JpaRepository<SummarySession, Long> {
+    // You can add custom queries if necessary
 
-    Optional<summarysession> findByCreatedByAndContent(user createdBy, String content);
-    List<summarysession> findByCreatedBy(user createdBy); // Add this
+    Optional<SummarySession> findByCreatedByAndContentHash(User createdBy, String contentHash);
+
+    Optional<SummarySession> findByCreatedByAndContent(User createdBy, String content);
+    List<SummarySession> findByCreatedBy(User createdBy); // Add this
 }

@@ -1,40 +1,52 @@
-package com.example.my_be.service;
+package com.example.demo.service;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.demo.model.Tag;
+import com.example.demo.repository.TagRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.my_be.model.tag;
-import com.example.my_be.repository.tagrepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class tagservice {
+public class TagService {
+
     @Autowired
-    private tagrepository tagrepository;
-    public Optional<tag> createTag(tag tag) {
-        return Optional.of(tagrepository.save(tag));
+    private TagRepository tagRepository;
+
+    /**
+     * Create a new tag.
+     */
+    public Tag createTag(Tag tag) {
+        return tagRepository.save(tag);
     }
 
-    public Optional<tag> getTagById(String id) {
-        return tagrepository.findById(id);
+    /**
+     * Get all tags.
+     */
+    public List<Tag> getAllTags() {
+        return tagRepository.findAll();
     }
 
-    public List<tag> getTags() {
-        return tagrepository.findAll();
+    /**
+     * Get a tag by ID.
+     */
+    public Optional<Tag> getTagById(String id) {
+        return tagRepository.findById(id);
     }
 
-    public Optional<tag> getTagByName(String name) {
-        return tagrepository.findByName(name);
+    /**
+     * Get a tag by name.
+     */
+    public Optional<Tag> getTagByName(String name) {
+        return tagRepository.findByName(name);
     }
 
+    /**
+     * Delete a tag by ID.
+     */
     public void deleteTag(String id) {
-        tagrepository.deleteById(id);
-    }
-    public Optional<tag> updateTag(String id, tag tag) {
-        tag existingTag = getTagById(id).orElseThrow(() -> new RuntimeException("Tag not found"));
-        existingTag.setName(tag.getName());
-        return Optional.of(tagrepository.save(existingTag));
+        tagRepository.deleteById(id);
     }
 }

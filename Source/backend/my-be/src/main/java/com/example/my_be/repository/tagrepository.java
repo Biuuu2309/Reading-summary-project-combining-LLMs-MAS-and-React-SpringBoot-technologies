@@ -1,13 +1,13 @@
-package com.example.my_be.repository;
+package com.example.demo.repository;
 
-import java.util.Optional;
-
+import com.example.demo.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.my_be.model.tag;
+import java.util.Optional;
 
 @Repository
-public interface tagrepository extends JpaRepository<tag, String> {
-    Optional<tag> findByName(String name);
+public interface TagRepository extends JpaRepository<Tag, String> {
+
+    Optional<Tag> findByName(String name); // Find a tag by its unique name
 }

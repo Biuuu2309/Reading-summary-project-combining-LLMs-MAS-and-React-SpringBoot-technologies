@@ -1,19 +1,19 @@
-package com.example.my_be.dto.request;
+package com.example.demo.dto;
 
-public class summaryhistoryrequest {
-    private Long history_id;
+public class SummaryHistoryDTO {
+    private Long historyId;
     private String method;
     private String summaryContent;
-    private Boolean is_accepted;
-    private Long session_id; // Add this
+    private Boolean isAccepted;
+    private Long sessionId; // Add this
     private String timestamp; // Add this
 
-    public Long getSession_id() {
-        return session_id;
+    public Long getSessionId() {
+        return sessionId;
     }
 
-    public void setSession_id(Long session_id) {
-        this.session_id = session_id;
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
     
     public String getTimestamp() {
@@ -23,12 +23,12 @@ public class summaryhistoryrequest {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
-    public Long getHistory_id() {
-        return history_id;
+    public Long getHistoryId() {
+        return historyId;
     }
 
-    public void setHistory_id(Long history_id) {
-        this.history_id = history_id;
+    public void setHistoryId(Long historyId) {
+        this.historyId = historyId;
     }
 
     public String getMethod() {
@@ -47,11 +47,13 @@ public class summaryhistoryrequest {
         this.summaryContent = summaryContent;
     }
 
-    public Boolean getIs_accepted() {
-        return is_accepted;
+    public Boolean getIsAccepted() {
+        return isAccepted;
     }
 
-    public void setIsAccepted(Boolean is_accepted) {
-        this.is_accepted = is_accepted;
+    public void setIsAccepted(Boolean isAccepted) {
+        this.isAccepted = isAccepted;
     }
+
+    // Getters and setters
 }

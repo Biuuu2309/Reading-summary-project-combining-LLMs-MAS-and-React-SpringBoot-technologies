@@ -1,38 +1,54 @@
-package com.example.my_be.service;
+package com.example.demo.service;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.demo.model.SummaryTag;
+import com.example.demo.model.Summary;
+import com.example.demo.model.Tag;
+import com.example.demo.repository.SummaryTagRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.my_be.model.summary;
-import com.example.my_be.model.summarytag;
-import com.example.my_be.model.tag;
-import com.example.my_be.repository.summarytagrepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class summarytagservice {
-    @Autowired
-    private summarytagrepository summaryTagRepository;
+public class SummaryTagService {
 
-    public summarytag createSummaryTag(summarytag summaryTag) {
+    @Autowired
+    private SummaryTagRepository summaryTagRepository;
+
+    /**
+     * Create a new summary-tag association.
+     */
+    public SummaryTag createSummaryTag(SummaryTag summaryTag) {
         return summaryTagRepository.save(summaryTag);
     }
 
-    public List<summarytag> getTagsBySummary(summary summary) {
+    /**
+     * Get all tags for a specific summary.
+     */
+    public List<SummaryTag> getTagsBySummary(Summary summary) {
         return summaryTagRepository.findBySummary(summary);
     }
 
-    public List<summarytag> getSummariesByTag(tag tag) {
+    /**
+     * Get all summaries associated with a specific tag.
+     */
+    public List<SummaryTag> getSummariesByTag(Tag tag) {
         return summaryTagRepository.findByTag(tag);
     }
 
+    /**
+     * Delete a specific summary-tag association by ID.
+     */
     public void deleteSummaryTag(String id) {
         summaryTagRepository.deleteById(id);
     }
 
-    public Optional<summarytag> getSummaryTagById(String id) {
+    /**
+     * Get a specific summary-tag association by ID.
+     */
+    public Optional<SummaryTag> getSummaryTagById(String id) {
         return summaryTagRepository.findById(id);
     }
 }

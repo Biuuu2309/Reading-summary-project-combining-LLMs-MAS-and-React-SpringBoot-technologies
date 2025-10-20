@@ -1,17 +1,17 @@
-package com.example.my_be.repository;
+package com.example.demo.repository;
 
-import java.util.List;
-
+import com.example.demo.model.SummaryTag;
+import com.example.demo.model.Summary;
+import com.example.demo.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.my_be.model.summary;
-import com.example.my_be.model.summarytag;
-import com.example.my_be.model.tag;
+import java.util.List;
 
 @Repository
-public interface summarytagrepository extends JpaRepository<summarytag, String> {
-    List<summarytag> findBySummary(summary summary); // Find all tags for a specific summary
+public interface SummaryTagRepository extends JpaRepository<SummaryTag, String> {
 
-    List<summarytag> findByTag(tag tag); // Find all summaries associated with a specific tag
+    List<SummaryTag> findBySummary(Summary summary); // Find all tags for a specific summary
+
+    List<SummaryTag> findByTag(Tag tag); // Find all summaries associated with a specific tag
 }

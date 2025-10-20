@@ -1,16 +1,8 @@
-package com.example.my_be.service;
+package com.example.demo.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import com.example.demo.model.SummarySession;
+import com.example.demo.model.User;
+import com.example.demo.repository.SummarySessionRepository;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,57 +17,63 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.example.my_be.model.summarysession;
-import com.example.my_be.model.user;
-import com.example.my_be.repository.summarysessionrepository;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
-public class summarysessionservice {
+public class SummarySessionService {
+
     private final RestTemplate restTemplate;
     private final Cloudinary cloudinary;
 
     @Autowired
-    public summarysessionrepository summarySessionRepository;
+    public SummarySessionRepository summarySessionRepository;
 
     @Autowired
-    private userservice userService;
+    private UserService userService;
 
     @Autowired
-    private summaryhistoryservice summaryhistoryservice;
+    private SummaryHistoryService summaryHistoryService;
 
     @Autowired
-    public summarysessionservice(RestTemplateBuilder restTemplateBuilder) {
+    public SummarySessionService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-        String envUrl = System.getenv("CLOUDINARY_URL");
-        String cloudinaryKey = System.getenv("CLOUDINARY_API_KEY");
-        String cloudinarySecret = System.getenv("CLOUDINARY_API_KEY_SECRET");
-        String cloudinaryUrl = "cloudinary://" + cloudinaryKey + ":" + cloudinarySecret + "@" + envUrl;
+        String cloudinaryUrl = "cloudinary://958111468128942:F2GbvNKARO6LCKsieLXunauzJW4@dzyp5klti";
         cloudinary = new Cloudinary(cloudinaryUrl);
     }
 
-    public summarysession createSummarySession(summarysession session) {
+    public SummarySession createSummarySession(SummarySession session) {
         String contentHash = computeHash(session.getContent());
         session.setContentHash(contentHash);
         return summarySessionRepository.save(session);
     }
 
-    public Optional<summarysession> getSummarySessionById(Long sessionId) {
-        return summarySessionRepository.findById(sessionId.toString());
+    public Optional<SummarySession> getSummarySessionById(Long sessionId) {
+        return summarySessionRepository.findById(sessionId);
     }
 
-    public summarysession updateSummarySession(summarysession session) {
+    public SummarySession updateSummarySession(SummarySession session) {
         return summarySessionRepository.save(session);
     }
 
-    public void deleteSummarySession(String sessionId) {
-        summarySessionRepository.deleteById(sessionId.toString());
+    public void deleteSummarySession(Long sessionId) {
+        summarySessionRepository.deleteById(sessionId);
     }
 
-    public Optional<summarysession> getSummarySessionByUserAndContent(user createdBy, String content) {
+    public Optional<SummarySession> getSummarySessionByUserAndContent(User createdBy, String content) {
         return summarySessionRepository.findByCreatedByAndContent(createdBy, content);
     }
 
-    public List<summarysession> findSessionsByUser(user user) {
+    public List<SummarySession> findSessionsByUser(User user) {
         return summarySessionRepository.findByCreatedBy(user);
     }
 
@@ -98,8 +96,8 @@ public class summarysessionservice {
     }
 
     public ImageUploadResult generateImageAndUploadToCloudinary(String content) {
-        String geminiApiKey = System.getenv("GEMINI_API_KEY");
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
+        String geminiApiKey = "AIzaSyB4GcRjMx9tGQ2ytkBHXY0pAwlNB264w7M";
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
 
         JSONObject request = new JSONObject();
         JSONObject contents = new JSONObject();
@@ -208,24 +206,25 @@ public class summarysessionservice {
         }
     }
 
-    public summarysession startSession(String userId, String content, String method) {
-        user createdBy = userService.getUserById(userId);
+    public SummarySession startSession(String userId, String content, String method) {
+        User createdBy = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         String contentHash = computeHash(content);
-        Optional<summarysession> existingSession = summarySessionRepository
+        Optional<SummarySession> existingSession = summarySessionRepository
                 .findByCreatedByAndContentHash(createdBy, contentHash);
 
         if (existingSession.isPresent()) {
-            summarysession session = existingSession.get();
-            summaryhistoryservice.createSummaryHistory(session, method, content);
+            SummarySession session = existingSession.get();
+            summaryHistoryService.createSummaryHistory(session, method, content);
             return session;
         } else {
-            summarysession newSession = new summarysession();
+            SummarySession newSession = new SummarySession();
             newSession.setCreatedBy(createdBy);
             newSession.setContent(content);
             newSession.setContentHash(contentHash);
             summarySessionRepository.save(newSession);
-            summaryhistoryservice.createSummaryHistory(newSession, method, content);
+            summaryHistoryService.createSummaryHistory(newSession, method, content);
             return newSession;
         }
     }

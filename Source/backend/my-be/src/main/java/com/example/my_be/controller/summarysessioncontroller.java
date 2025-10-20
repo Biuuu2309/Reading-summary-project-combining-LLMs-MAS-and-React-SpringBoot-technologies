@@ -1,11 +1,9 @@
-package com.example.my_be.controller;
-
-import java.io.IOException;
-import java.util.Optional;
+package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,41 +20,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.example.my_be.model.summarysession;
-import com.example.my_be.service.summarysessionservice;
-import com.example.my_be.service.summarysessionservice.ImageUploadResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.example.demo.model.SummarySession;
+import com.example.demo.service.SummarySessionService;
+import com.example.demo.service.SummarySessionService.ImageUploadResult;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/summarysession")
-public class summarysessioncontroller {
+@RequestMapping("/api/summary-sessions")
+public class SummarySessionController {
+
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    private summarysessionservice summarySessionService;
+    private SummarySessionService summarySessionService;
 
     // Inject the Gemini API key from application.properties
-    private String geminiApiKey = System.getenv("GEMINI_API_KEY");
+    @Value("${gemini.api.key}")
+    private String geminiApiKey;
 
     // Define the base Gemini API URL
     private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
 
     // Create a new summary session
     @PostMapping
-    public ResponseEntity<summarysession> createSummarySession(@RequestBody summarysession session) {
-        summarysession createdSession = summarySessionService.createSummarySession(session);
+    public ResponseEntity<SummarySession> createSummarySession(@RequestBody SummarySession session) {
+        SummarySession createdSession = summarySessionService.createSummarySession(session);
         return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
     }
 
     // Get a summary session by ID
     @GetMapping("/{sessionId}")
-    public ResponseEntity<summarysession> getSummarySessionById(@PathVariable Long sessionId) {
-        Optional<summarysession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
+    public ResponseEntity<SummarySession> getSummarySessionById(@PathVariable Long sessionId) {
+        Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
         return sessionOpt.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -144,7 +146,13 @@ public class summarysessioncontroller {
     
             // Step 3: Extract and process the Gemini response
             JsonNode geminiJsonNode = mapper.readTree(geminiResponseBody);
-            String geminiText = geminiJsonNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
+            String geminiText = geminiJsonNode.path("candidates")
+                                              .get(0)
+                                              .path("content")
+                                              .path("parts")
+                                              .get(0)
+                                              .path("text")
+                                              .asText();
             System.out.println("Gemini generated text: " + geminiText);
     
             // Step 4: Remove Markdown formatting
@@ -190,12 +198,12 @@ public class summarysessioncontroller {
     }
     
     @PutMapping("/{sessionId}")
-    public ResponseEntity<summarysession> updateSummarySession(@PathVariable Long sessionId, @RequestBody summarysession updatedSession) {
-        Optional<summarysession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
+    public ResponseEntity<SummarySession> updateSummarySession(@PathVariable Long sessionId, @RequestBody SummarySession updatedSession) {
+        Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
         if (sessionOpt.isPresent()) {
-            summarysession existingSession = sessionOpt.get();
+            SummarySession existingSession = sessionOpt.get();
             existingSession.setContent(updatedSession.getContent());
-            summarysession updatedSessionEntity = summarySessionService.updateSummarySession(existingSession);
+            SummarySession updatedSessionEntity = summarySessionService.updateSummarySession(existingSession);
             return ResponseEntity.ok(updatedSessionEntity);
         } else {
             return ResponseEntity.notFound().build();
@@ -203,7 +211,7 @@ public class summarysessioncontroller {
     }
 
     @PostMapping("/generate-image")
-    public ResponseEntity<ImageUploadResult> generateImageAndUploadToCloudinary(@RequestBody summarysession session) {
+    public ResponseEntity<ImageUploadResult> generateImageAndUploadToCloudinary(@RequestBody SummarySession session) {
         String content = session.getContent();
         ImageUploadResult result = summarySessionService.generateImageAndUploadToCloudinary(content);
         return ResponseEntity.ok(result);
@@ -228,7 +236,7 @@ public class summarysessioncontroller {
     // Delete a summary session by ID
     @DeleteMapping("/{sessionId}")
     public ResponseEntity<Void> deleteSummarySession(@PathVariable Long sessionId) {
-        summarySessionService.deleteSummarySession(sessionId.toString());
+        summarySessionService.deleteSummarySession(sessionId);
         return ResponseEntity.noContent().build();
     }
 

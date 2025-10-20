@@ -1,28 +1,29 @@
-package com.example.my_be.service;
+package com.example.demo.service;
+
+import com.example.demo.model.SummaryHistory;
+import com.example.demo.model.SummarySession;
+import com.example.demo.repository.SummaryHistoryRepository;
+import com.example.demo.dto.SummaryHistoryDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import com.example.my_be.dto.request.summaryhistoryrequest;
-import com.example.my_be.model.summaryhistory;
-import com.example.my_be.model.summarysession;
-import com.example.my_be.repository.summaryhistoryrepository;
 
 @Service
-public class summaryhistoryservice {
+public class SummaryHistoryService {
+
     @Autowired
-    private summaryhistoryrepository summaryHistoryRepository;
+    private SummaryHistoryRepository summaryHistoryRepository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,12 +31,12 @@ public class summaryhistoryservice {
     @Autowired
     private ObjectMapper objectMapper; // Inject ObjectMapper
 
-    public summaryhistoryrequest createSummaryHistory(summarysession session, String method, String content) {
+    public SummaryHistoryDTO createSummaryHistory(SummarySession session, String method, String content) {
         return createSummaryHistory(session, method, content, null);
-    }   
+    }
 
-    public summaryhistoryrequest createSummaryHistory(summarysession session, String method, String content, Integer grade) {
-        summaryhistory history = new summaryhistory();
+    public SummaryHistoryDTO createSummaryHistory(SummarySession session, String method, String content, Integer grade) {
+        SummaryHistory history = new SummaryHistory();
         history.setSession(session);
         history.setMethod(method);
 
@@ -52,8 +53,8 @@ public class summaryhistoryservice {
         history.setIsAccepted(false);
 
         System.out.println("Saving summaryContent: " + history.getSummaryContent());
-        summaryhistory savedHistory = summaryHistoryRepository.save(history);
-        return mapToRequest(savedHistory);
+        SummaryHistory savedHistory = summaryHistoryRepository.save(history);
+        return mapToDTO(savedHistory);
     }
 
     private String callParaphraseApi(String text, Integer grade) {
@@ -135,27 +136,27 @@ public class summaryhistoryservice {
         }
     }
 
-    public Optional<summaryhistoryrequest> getSummaryHistoryById(Long historyId) {
-        Optional<summaryhistory> historyOpt = summaryHistoryRepository.findById(historyId);
-        return historyOpt.map(this::mapToRequest);
+    public Optional<SummaryHistoryDTO> getSummaryHistoryById(Long historyId) {
+        Optional<SummaryHistory> historyOpt = summaryHistoryRepository.findById(historyId);
+        return historyOpt.map(this::mapToDTO);
     }
 
-    public summaryhistoryrequest updateSummaryHistory(summaryhistoryrequest historyDTO) {
-        summaryhistory history = mapToHistory(historyDTO);
-        summaryhistory updatedHistory = summaryHistoryRepository.save(history);
-        return mapToRequest(updatedHistory);
+    public SummaryHistoryDTO updateSummaryHistory(SummaryHistoryDTO historyDTO) {
+        SummaryHistory history = mapToEntity(historyDTO);
+        SummaryHistory updatedHistory = summaryHistoryRepository.save(history);
+        return mapToDTO(updatedHistory);
     }
 
     public void deleteSummaryHistory(Long historyId) {
         summaryHistoryRepository.deleteById(historyId);
     }
 
-    public List<summaryhistory> findBySession(summarysession session) {
+    public List<SummaryHistory> findBySession(SummarySession session) {
         return summaryHistoryRepository.findBySession(session);
     }
 
-    public summaryhistoryrequest mapToRequest(summaryhistory history) {
-        summaryhistoryrequest dto = new summaryhistoryrequest();
+    public SummaryHistoryDTO mapToDTO(SummaryHistory history) {
+        SummaryHistoryDTO dto = new SummaryHistoryDTO();
         dto.setHistoryId(history.getHistoryId());
         dto.setMethod(history.getMethod());
         dto.setSummaryContent(history.getSummaryContent());
@@ -165,8 +166,8 @@ public class summaryhistoryservice {
         return dto;
     }
 
-    private summaryhistory mapToHistory(summaryhistoryrequest historyDTO) {
-        summaryhistory history = new summaryhistory();
+    private SummaryHistory mapToEntity(SummaryHistoryDTO historyDTO) {
+        SummaryHistory history = new SummaryHistory();
         history.setHistoryId(historyDTO.getHistoryId());
         history.setMethod(historyDTO.getMethod());
         history.setSummaryContent(historyDTO.getSummaryContent());

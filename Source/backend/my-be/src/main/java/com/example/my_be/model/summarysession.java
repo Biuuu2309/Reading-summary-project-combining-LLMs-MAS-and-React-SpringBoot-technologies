@@ -1,17 +1,9 @@
-package com.example.my_be.model;
+package com.example.demo.model;
+
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 
-public class summarysession {
+public class SummarySession {
     @Column(nullable = false)
     private String contentHash;
 
@@ -29,8 +21,8 @@ public class summarysession {
     private Long sessionId; // Unique ID for the session
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", referencedColumnName = "user_id", nullable = false, columnDefinition = "varchar(255)")
-    private user createdBy; // User who initiated this summary session
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy; // User who initiated this summary session
 
     @Column(nullable = false, columnDefinition = "MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     @Lob
@@ -48,11 +40,11 @@ public class summarysession {
         this.sessionId = sessionId;
     }
 
-    public user getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(user createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 

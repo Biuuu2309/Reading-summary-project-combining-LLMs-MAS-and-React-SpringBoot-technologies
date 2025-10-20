@@ -1,14 +1,14 @@
-package com.example.my_be.repository;
+package com.example.demo.repository;
+
+import com.example.demo.model.ReadHistory;
+import com.example.demo.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+public interface ReadHistoryRepository extends JpaRepository<ReadHistory, Long> {
 
-import com.example.my_be.model.readhistory;
-import com.example.my_be.model.user;
+    // Method to find read history by user
+    List<ReadHistory> findByUser(User user);
 
-@Repository
-public interface readhistoryrepository extends JpaRepository<readhistory, Long> {
-    List<readhistory> findByUser(user user);
 }

@@ -1,35 +1,42 @@
-package com.example.my_be.service;
+package com.example.demo.service;
+
+import com.example.demo.model.ReadHistory;
+import com.example.demo.model.Summary;
+import com.example.demo.model.User;
+import com.example.demo.repository.ReadHistoryRepository;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.my_be.model.readhistory;
-import com.example.my_be.model.summary;
-import com.example.my_be.model.user;
-import com.example.my_be.repository.readhistoryrepository;
-
 @Service
-public class readhistoryservice {
-    @Autowired
-    private readhistoryrepository readHistoryRepository;
+public class ReadHistoryService {
 
-    public readhistory logReadHistory(user user, summary summary) {
-        readhistory readHistory = new readhistory();
+    @Autowired
+    private ReadHistoryRepository readHistoryRepository;
+
+    // Method to log the read history
+    public ReadHistory logReadHistory(User user, Summary summary) {
+        // Create a new ReadHistory record
+        ReadHistory readHistory = new ReadHistory();
         readHistory.setUser(user);
         readHistory.setSummary(summary);
 
+        // Save and return the ReadHistory entity
         return readHistoryRepository.save(readHistory);
     }
 
-    public List<readhistory> getReadHistoryByUser(user user) {
-        List<readhistory> histories = readHistoryRepository.findByUser(user);
+    public List<ReadHistory> getReadHistoryByUser(User user) {
+        // Explicitly fetch user and summary in the service layer
+        List<ReadHistory> histories = readHistoryRepository.findByUser(user);
         
-        for (readhistory history : histories) {
-            history.getUser().getUsername();
-            history.getSummary().getTitle();
+        // Optionally, initialize the relationships
+        for (ReadHistory history : histories) {
+            history.getUser().getUsername(); // Force initialization of the user
+            history.getSummary().getTitle(); // Force initialization of the summary
         }
         return histories;
     }
+    
 }

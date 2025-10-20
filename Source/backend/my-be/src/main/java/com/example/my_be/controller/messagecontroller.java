@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.my_be.dto.request.messagecreationrequest;
+import com.example.my_be.dto.messagecreationrequest;
 import com.example.my_be.model.message_user_ai;
 import com.example.my_be.service.messageservice;
 
 @RestController
 @RequestMapping("/message")
-public class messagecontroller {
+public class MessageController {
     @Autowired
     private messageservice messageservice;
     @PostMapping

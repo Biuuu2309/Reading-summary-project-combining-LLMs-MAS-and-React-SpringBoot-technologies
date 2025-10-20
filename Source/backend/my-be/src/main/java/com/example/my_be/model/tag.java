@@ -1,4 +1,4 @@
-package com.example.my_be.model;
+package com.example.demo.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +15,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "tags")
 @Data
 @NoArgsConstructor
-public class tag {
+public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)// 
 
-    private String tag_id; // Primary key
+    private String tagId; // Primary key
 
     @Column(nullable = false, unique = true)
     private String name; // Unique name of the tag
