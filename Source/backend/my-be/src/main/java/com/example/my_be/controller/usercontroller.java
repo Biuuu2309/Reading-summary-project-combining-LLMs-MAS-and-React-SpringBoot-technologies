@@ -1,8 +1,8 @@
-package com.example.demo.controller;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.UserResponse;
-import com.example.demo.model.User;
-import com.example.demo.service.UserService;
+package com.example.my_be.controller;
+import com.example.my_be.dto.LoginRequest;
+import com.example.my_be.dto.UserResponse;
+import com.example.my_be.model.User;
+import com.example.my_be.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

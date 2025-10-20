@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.my_be.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.example.demo.model.SummarySession;
-import com.example.demo.service.SummarySessionService;
-import com.example.demo.service.SummarySessionService.ImageUploadResult;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.service.SummarySessionService;
+import com.example.my_be.service.SummarySessionService.ImageUploadResult;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -42,8 +42,7 @@ public class SummarySessionController {
     private SummarySessionService summarySessionService;
 
     // Inject the Gemini API key from application.properties
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
+    private String geminiApiKey = System.getenv("GEMINI_API_KEY");
 
     // Define the base Gemini API URL
     private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";

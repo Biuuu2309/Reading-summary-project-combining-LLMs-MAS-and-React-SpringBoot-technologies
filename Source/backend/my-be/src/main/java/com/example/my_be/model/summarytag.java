@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.my_be.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;

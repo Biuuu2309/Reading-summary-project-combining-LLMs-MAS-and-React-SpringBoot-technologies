@@ -1,15 +1,15 @@
-package com.example.my_be.dto.request;
+package com.example.my_be.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class messagecreationrequest {
+public class MessageRequest {
     private String user_id;
     private String role;
     private String message;
     private String created_at;
 
-    public messagecreationrequest() {
+    public MessageRequest() {
         this.created_at = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
     }
 
@@ -42,7 +42,7 @@ public class messagecreationrequest {
         return created_at;
     }
 
-    public messagecreationrequest(String role, String message, String created_at) {
+    public MessageRequest(String role, String message, String created_at) {
         this.role = role;
         this.message = message;
         this.created_at = created_at;

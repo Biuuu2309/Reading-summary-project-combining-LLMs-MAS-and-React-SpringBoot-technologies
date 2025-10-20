@@ -1,11 +1,11 @@
-package com.example.demo.controller;
+package com.example.my_be.controller;
 
-import com.example.demo.model.ReadHistory;
-import com.example.demo.model.Summary;
-import com.example.demo.model.User;
-import com.example.demo.service.ReadHistoryService;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.SummaryRepository;
+import com.example.my_be.model.ReadHistory;
+import com.example.my_be.model.Summary;
+import com.example.my_be.model.User;
+import com.example.my_be.service.ReadHistoryService;
+import com.example.my_be.repository.UserRepository;
+import com.example.my_be.repository.SummaryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

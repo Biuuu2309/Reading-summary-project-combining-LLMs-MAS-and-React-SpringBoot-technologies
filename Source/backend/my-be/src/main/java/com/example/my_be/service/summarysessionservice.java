@@ -1,8 +1,8 @@
-package com.example.demo.service;
+package com.example.my_be.service;
 
-import com.example.demo.model.SummarySession;
-import com.example.demo.model.User;
-import com.example.demo.repository.SummarySessionRepository;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.model.User;
+import com.example.my_be.repository.SummarySessionRepository;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,10 @@ public class SummarySessionService {
     @Autowired
     public SummarySessionService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-        String cloudinaryUrl = "cloudinary://958111468128942:F2GbvNKARO6LCKsieLXunauzJW4@dzyp5klti";
+        String envUrl = System.getenv("CLOUDINARY_URL");
+        String cloudinaryKey = System.getenv("CLOUDINARY_API_KEY");
+        String cloudinarySecret = System.getenv("CLOUDINARY_API_KEY_SECRET");
+        String cloudinaryUrl = "cloudinary://" + cloudinaryKey + ":" + cloudinarySecret + "@" + envUrl;
         cloudinary = new Cloudinary(cloudinaryUrl);
     }
 
@@ -96,7 +99,7 @@ public class SummarySessionService {
     }
 
     public ImageUploadResult generateImageAndUploadToCloudinary(String content) {
-        String geminiApiKey = "AIzaSyB4GcRjMx9tGQ2ytkBHXY0pAwlNB264w7M";
+        String geminiApiKey = System.getenv("GEMINI_API_KEY");
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
 
         JSONObject request = new JSONObject();

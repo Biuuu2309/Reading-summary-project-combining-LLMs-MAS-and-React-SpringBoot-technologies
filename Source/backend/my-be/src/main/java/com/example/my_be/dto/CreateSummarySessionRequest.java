@@ -1,5 +1,5 @@
 // CreateSummarySessionRequest.java
-package com.example.demo.dto;
+package com.example.my_be.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

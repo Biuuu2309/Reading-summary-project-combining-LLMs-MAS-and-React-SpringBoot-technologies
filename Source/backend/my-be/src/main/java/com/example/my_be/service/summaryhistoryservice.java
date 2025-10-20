@@ -1,9 +1,9 @@
-package com.example.demo.service;
+package com.example.my_be.service;
 
-import com.example.demo.model.SummaryHistory;
-import com.example.demo.model.SummarySession;
-import com.example.demo.repository.SummaryHistoryRepository;
-import com.example.demo.dto.SummaryHistoryDTO;
+import com.example.my_be.model.SummaryHistory;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.repository.SummaryHistoryRepository;
+import com.example.my_be.dto.SummaryHistoryDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -99,7 +99,7 @@ public class SummaryHistoryService {
     }
     private String callExtractionApi(String text, Integer grade) {
         try {
-            HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders();my_be
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             String url = "http://localhost:8000/summarize";

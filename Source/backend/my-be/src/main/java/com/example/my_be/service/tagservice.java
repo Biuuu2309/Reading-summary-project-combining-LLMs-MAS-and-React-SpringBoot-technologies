@@ -1,7 +1,7 @@
-package com.example.demo.service;
+package com.example.my_be.service;
 
-import com.example.demo.model.Tag;
-import com.example.demo.repository.TagRepository;
+import com.example.my_be.model.Tag;
+import com.example.my_be.repository.TagRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

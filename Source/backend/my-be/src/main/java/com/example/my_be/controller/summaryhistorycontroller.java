@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.my_be.controller;
 
 import java.util.Date;
 import java.util.List;
@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.dto.SummaryHistoryDTO;
-import com.example.demo.model.SummaryHistory;
-import com.example.demo.model.SummarySession;
-import com.example.demo.model.User;
-import com.example.demo.service.SummaryHistoryService;
-import com.example.demo.service.SummarySessionService;
-import com.example.demo.service.UserService;
+import com.example.my_be.dto.SummaryHistoryDTO;
+import com.example.my_be.model.SummaryHistory;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.model.User;
+import com.example.my_be.service.SummaryHistoryService;
+import com.example.my_be.service.SummarySessionService;
+import com.example.my_be.service.UserService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

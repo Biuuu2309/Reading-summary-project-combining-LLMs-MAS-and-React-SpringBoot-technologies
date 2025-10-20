@@ -1,9 +1,9 @@
-package com.example.demo.service;
+package com.example.my_be.service;
 
-import com.example.demo.model.ReadHistory;
-import com.example.demo.model.Summary;
-import com.example.demo.model.User;
-import com.example.demo.repository.ReadHistoryRepository;
+import com.example.my_be.model.ReadHistory;
+import com.example.my_be.model.Summary;
+import com.example.my_be.model.User;
+import com.example.my_be.repository.ReadHistoryRepository;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "conversations")
-public class message_user_ai {
+public class MessageUserAi {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String message_id;
@@ -17,7 +17,7 @@ public class message_user_ai {
     private String message;
     private String created_at;
 
-    public message_user_ai() { }
+    public MessageUserAi() { }
 
     public void setMessage_id(String message_id) {
         this.message_id = message_id;
@@ -50,7 +50,7 @@ public class message_user_ai {
         return created_at;
     }
 
-    public message_user_ai(String message_id, String user_id, String role, String message, String created_at) {
+    public MessageUserAi(String message_id, String user_id, String role, String message, String created_at) {
         this.message_id = message_id;
         this.role = role;
         this.user_id = user_id;

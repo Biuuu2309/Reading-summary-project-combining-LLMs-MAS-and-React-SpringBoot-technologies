@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.my_be.config;
 
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Value;

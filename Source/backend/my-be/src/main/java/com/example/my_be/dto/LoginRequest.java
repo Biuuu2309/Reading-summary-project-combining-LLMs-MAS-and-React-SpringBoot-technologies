@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.my_be.dto;
 
 public class LoginRequest {
     private String username; // Changed from email to username

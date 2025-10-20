@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.my_be.model.message_user_ai;
 
 @Repository
-public interface messagerepository extends JpaRepository<message_user_ai, String> {
+public interface MessageRepository extends JpaRepository<message_user_ai, String> {
     
 }

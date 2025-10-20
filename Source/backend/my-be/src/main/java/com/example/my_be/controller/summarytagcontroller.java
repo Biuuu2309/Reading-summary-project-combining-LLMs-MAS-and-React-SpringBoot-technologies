@@ -1,11 +1,11 @@
-package com.example.demo.controller;
+package com.example.my_be.controller;
 
-import com.example.demo.model.Summary;
-import com.example.demo.model.SummaryTag;
-import com.example.demo.model.Tag;
-import com.example.demo.service.SummaryService;
-import com.example.demo.service.SummaryTagService;
-import com.example.demo.service.TagService;
+import com.example.my_be.model.Summary;
+import com.example.my_be.model.SummaryTag;
+import com.example.my_be.model.Tag;
+import com.example.my_be.service.SummaryService;
+import com.example.my_be.service.SummaryTagService;
+import com.example.my_be.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,10 +1,10 @@
-package com.example.demo.controller;
+package com.example.my_be.controller;
 
-import com.example.demo.dto.SummaryDTO;
-import com.example.demo.model.Summary;
-import com.example.demo.model.User;
-import com.example.demo.service.SummaryService;
-import com.example.demo.repository.UserRepository;
+import com.example.my_be.dto.SummaryDTO;
+import com.example.my_be.model.Summary;
+import com.example.my_be.model.User;
+import com.example.my_be.service.SummaryService;
+import com.example.my_be.repository.UserRepository;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;

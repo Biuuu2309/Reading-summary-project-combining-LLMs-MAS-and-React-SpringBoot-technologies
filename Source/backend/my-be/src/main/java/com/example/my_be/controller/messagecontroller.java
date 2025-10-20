@@ -13,30 +13,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.my_be.dto.messagecreationrequest;
-import com.example.my_be.model.message_user_ai;
-import com.example.my_be.service.messageservice;
+import com.example.my_be.dto.MessageRequest;
+import com.example.my_be.model.MessageUserAi;
+import com.example.my_be.service.MessageService;
 
 @RestController
 @RequestMapping("/message")
 public class MessageController {
     @Autowired
-    private messageservice messageservice;
+    private MessageService messageService;
     @PostMapping
-    public ResponseEntity<message_user_ai> createMessage(@RequestBody messagecreationrequest request) {
-        return new ResponseEntity<>(messageservice.createRequest(request), HttpStatus.CREATED);
+    public ResponseEntity<MessageUserAi> createMessage(@RequestBody MessageRequest request) {
+        return new ResponseEntity<>(messageService.createRequest(request), HttpStatus.CREATED);
     }
     @GetMapping
-    public ResponseEntity<List<message_user_ai>> getMessages() {
-        return new ResponseEntity<>(messageservice.getMessages(), HttpStatus.OK);
+    public ResponseEntity<List<MessageUserAi>> getMessages() {
+        return new ResponseEntity<>(messageService.getMessages(), HttpStatus.OK);
     }
     @GetMapping("/{message_id}")
-    public ResponseEntity<message_user_ai> getMessageById(@PathVariable("message_id") String message_id) {
-        return new ResponseEntity<>(messageservice.getMessageById(message_id), HttpStatus.OK);
+    public ResponseEntity<MessageUserAi> getMessageById(@PathVariable("message_id") String message_id) {
+        return new ResponseEntity<>(messageService.getMessageById(message_id), HttpStatus.OK);
     }
     @DeleteMapping("/{message_id}")
     public ResponseEntity<Void> deleteMessage(@PathVariable("message_id") String message_id) {
-        messageservice.deleteMessage(message_id);
+        messageService.deleteMessage(message_id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

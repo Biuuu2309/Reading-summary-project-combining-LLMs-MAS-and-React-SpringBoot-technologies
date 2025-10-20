@@ -1,7 +1,7 @@
-package com.example.demo.repository;
+package com.example.my_be.repository;
 
-import com.example.demo.model.ReadHistory;
-import com.example.demo.model.User;
+import com.example.my_be.model.ReadHistory;
+import com.example.my_be.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

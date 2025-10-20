@@ -1,6 +1,6 @@
-package com.example.demo.service;
+package com.example.my_be.service;
 
-import com.example.demo.model.User;
+import com.example.my_be.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

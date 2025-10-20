@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.example.my_be.repository;
 
-import com.example.demo.model.Tag;
+import com.example.my_be.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.example.demo.repository;
+package com.example.my_be.repository;
 
-import com.example.demo.model.SummarySession;
-import com.example.demo.model.User;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.model.User;
 
 import java.util.List;
 import java.util.Optional;
