@@ -1,8 +1,16 @@
 package com.example.my_be.service;
 
-import com.example.my_be.model.SummarySession;
-import com.example.my_be.model.User;
-import com.example.my_be.repository.SummarySessionRepository;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.model.User;
+import com.example.my_be.repository.SummarySessionRepository;
 
 @Service
 public class SummarySessionService {
@@ -45,13 +45,9 @@ public class SummarySessionService {
     private SummaryHistoryService summaryHistoryService;
 
     @Autowired
-    public SummarySessionService(RestTemplateBuilder restTemplateBuilder) {
+    public SummarySessionService(RestTemplateBuilder restTemplateBuilder, Cloudinary cloudinary) {
         this.restTemplate = restTemplateBuilder.build();
-        String envUrl = System.getenv("CLOUDINARY_URL");
-        String cloudinaryKey = System.getenv("CLOUDINARY_API_KEY");
-        String cloudinarySecret = System.getenv("CLOUDINARY_API_KEY_SECRET");
-        String cloudinaryUrl = "cloudinary://" + cloudinaryKey + ":" + cloudinarySecret + "@" + envUrl;
-        cloudinary = new Cloudinary(cloudinaryUrl);
+        this.cloudinary = cloudinary;
     }
 
     public SummarySession createSummarySession(SummarySession session) {
