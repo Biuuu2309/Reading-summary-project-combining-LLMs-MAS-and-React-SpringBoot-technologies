@@ -32,11 +32,13 @@ public class MessageController {
     }
     @GetMapping("/{message_id}")
     public ResponseEntity<MessageUserAi> getMessageById(@PathVariable("message_id") String message_id) {
-        return new ResponseEntity<>(messageService.getMessageById(message_id), HttpStatus.OK);
+        return messageService.getMessageById(message_id)
+            .map(body -> new ResponseEntity<>(body, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @DeleteMapping("/{message_id}")
     public ResponseEntity<Void> deleteMessage(@PathVariable("message_id") String message_id) {
         messageService.deleteMessage(message_id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

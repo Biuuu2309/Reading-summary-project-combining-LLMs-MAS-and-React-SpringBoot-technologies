@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "summary_session")
+@Table(name = "summary_sessions")
 @Data
 @NoArgsConstructor
 
@@ -30,7 +30,7 @@ public class SummarySession {
     private Long sessionId; // Unique ID for the session
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "user_id", nullable = false, columnDefinition = "varchar(255)")
     private User createdBy; // User who initiated this summary session
 
     @Column(nullable = false, columnDefinition = "MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")

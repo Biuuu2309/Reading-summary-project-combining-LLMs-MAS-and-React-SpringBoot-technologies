@@ -11,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +26,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     // hide it from the Swagger UI
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @Column(name = "user_id")
     private String userId;
 
     @Column(unique = true, nullable = false)

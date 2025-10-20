@@ -14,13 +14,13 @@ import com.example.my_be.repository.MessageRepository;
 public class MessageService {
     @Autowired
     private MessageRepository messagerepository;
-    public Optional<MessageUserAi> createRequest(MessageRequest request) {
+    public MessageUserAi createRequest(MessageRequest request) {
         MessageUserAi message_user_ai = new MessageUserAi();
         message_user_ai.setUser_id(request.getUser_id());
         message_user_ai.setRole(request.getRole());
         message_user_ai.setMessage(request.getMessage());
         message_user_ai.setCreated_at(request.getCreated_at());
-        return Optional.of(messagerepository.save(message_user_ai));
+        return messagerepository.save(message_user_ai);
     }
     public List<MessageUserAi> getMessages() {
         return messagerepository.findAll();
