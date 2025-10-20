@@ -1,13 +1,5 @@
 package com.example.my_be.service;
 
-import com.example.my_be.model.SummaryHistory;
-import com.example.my_be.model.SummarySession;
-import com.example.my_be.repository.SummaryHistoryRepository;
-import com.example.my_be.dto.SummaryHistoryDTO;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +10,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.my_be.dto.SummaryHistoryDTO;
+import com.example.my_be.model.SummaryHistory;
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.repository.SummaryHistoryRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class SummaryHistoryService {
@@ -99,7 +99,7 @@ public class SummaryHistoryService {
     }
     private String callExtractionApi(String text, Integer grade) {
         try {
-            HttpHeaders headers = new HttpHeaders();my_be
+            HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             String url = "http://localhost:8000/summarize";
