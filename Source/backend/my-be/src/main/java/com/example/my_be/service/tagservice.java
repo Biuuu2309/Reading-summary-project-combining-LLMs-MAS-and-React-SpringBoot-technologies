@@ -44,6 +44,13 @@ public class TagService {
     }
 
     /**
+     * Get all tags by name.
+     */
+    public List<Tag> getAllTagsByName(String name) {
+        return tagRepository.findAllByName(name);
+    }
+
+    /**
      * Delete a tag by ID.
      */
     public void deleteTag(String id) {

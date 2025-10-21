@@ -1,5 +1,6 @@
 package com.example.my_be.controller;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.my_be.dto.LoginRequest;
@@ -27,6 +27,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     // Get all users
     @GetMapping
@@ -46,9 +49,7 @@ public class UserController {
     // Create a new user
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        user.setPassword(user.getPassword(), passwordEncoder);
         User savedUser = userService.createUser(user);
-
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -77,12 +78,6 @@ public class UserController {
         }
     }
     // Login endpoint
-
-
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Optional<User> userOptional = userService.findByUsername(loginRequest.getUsername());
@@ -124,7 +119,8 @@ public class UserController {
 
     // Update a user's avatar URL
     @PutMapping("/{id}/avatar")
-    public ResponseEntity<Void> updateAvatar(@PathVariable String id, @RequestParam String avatarUrl) {
+    public ResponseEntity<Void> updateAvatar(@PathVariable String id, @RequestBody Map<String, String> request) {
+        String avatarUrl = request.get("avatarUrl");
         Optional<User> optionalUser = userService.getUserById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
