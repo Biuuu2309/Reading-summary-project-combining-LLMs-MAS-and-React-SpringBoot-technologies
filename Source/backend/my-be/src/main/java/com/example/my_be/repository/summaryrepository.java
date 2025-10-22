@@ -1,14 +1,15 @@
 package com.example.my_be.repository;
 
-import com.example.my_be.model.Summary;
-import com.example.my_be.model.User;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.my_be.model.Summary;
+import com.example.my_be.model.User;
 
 @Repository
 public interface SummaryRepository extends JpaRepository<Summary, String> {
@@ -25,7 +26,7 @@ public interface SummaryRepository extends JpaRepository<Summary, String> {
 
     List<Summary> findByTitleContainingIgnoreCase(@Param("title") String title);
 
-    @Query("SELECT s FROM Summary s WHERE (LOWER(s.title) LIKE %:searchTerm%) AND (LOWER(s.grade) = :grade OR :grade = '')")
+    @Query("SELECT s FROM Summary s WHERE (LOWER(s.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) AND (LOWER(s.grade) = LOWER(:grade) OR :grade = '')")
     List<Summary> findByTitleContainingIgnoreCaseAndGrade(
         @Param("searchTerm") String searchTerm, @Param("grade") String grade);
 

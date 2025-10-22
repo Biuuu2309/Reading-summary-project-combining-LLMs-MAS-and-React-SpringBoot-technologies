@@ -1,19 +1,19 @@
 package com.example.my_be.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.my_be.dto.SummaryDTO;
 import com.example.my_be.model.ReadHistory;
 import com.example.my_be.model.Summary;
 import com.example.my_be.model.User;
 import com.example.my_be.repository.ReadHistoryRepository;
 import com.example.my_be.repository.SummaryRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SummaryService {

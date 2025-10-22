@@ -46,7 +46,7 @@ public ResponseEntity<List<SummaryDTO>> getAllSummaries() {
 
 
 @GetMapping("/{id}")
-public ResponseEntity<SummaryDTO> getSummaryById(@PathVariable String id, @RequestParam String userId) {
+public ResponseEntity<SummaryDTO> getSummaryById(@PathVariable String id, @RequestParam(required = false) String userId) {
     Optional<Summary> summaryOpt = summaryService.getSummaryById(id);
 
     if (summaryOpt.isPresent()) {
@@ -312,9 +312,12 @@ public ResponseEntity<Void> deleteSummaries(@RequestBody List<String> ids) {
 }
     // Get all summaries by status (e.g., PENDING, APPROVED)
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Summary>> getSummariesByStatus(@PathVariable String status) {
+    public ResponseEntity<List<SummaryDTO>> getSummariesByStatus(@PathVariable String status) {
         List<Summary> summaries = summaryService.getSummariesByStatus(status);
-        return new ResponseEntity<>(summaries, HttpStatus.OK);
+        List<SummaryDTO> summaryDTOs = summaries.stream()
+            .map(this::mapToSummaryDTO)
+            .collect(Collectors.toList());
+        return new ResponseEntity<>(summaryDTOs, HttpStatus.OK);
     }
 
     // Get all summaries created by a specific user
@@ -325,7 +328,8 @@ public ResponseEntity<Void> deleteSummaries(@RequestBody List<String> ids) {
     }
     // Approve or reject a summary
     @PutMapping("/{id}/status")
-    public ResponseEntity<Void> updateSummaryStatus(@PathVariable String id, @RequestParam String status) {
+    public ResponseEntity<Void> updateSummaryStatus(@PathVariable String id, @RequestBody Map<String, String> request) {
+        String status = request.get("status");
         summaryService.updateSummaryStatus(id, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -340,8 +344,22 @@ public ResponseEntity<Void> deleteSummaries(@RequestBody List<String> ids) {
 
     // Get all summaries by method (e.g., extractive, abstractive)
     @GetMapping("/method/{method}")
-    public ResponseEntity<List<Summary>> getSummariesByMethod(@PathVariable String method) {
+    public ResponseEntity<List<SummaryDTO>> getSummariesByMethod(@PathVariable String method) {
         List<Summary> summaries = summaryService.getSummariesByMethod(method);
-        return new ResponseEntity<>(summaries, HttpStatus.OK);
+        List<SummaryDTO> summaryDTOs = summaries.stream()
+            .map(this::mapToSummaryDTO)
+            .collect(Collectors.toList());
+        return new ResponseEntity<>(summaryDTOs, HttpStatus.OK);
+    }
+
+    // Debug endpoint to check all grades in database
+    @GetMapping("/debug/grades")
+    public ResponseEntity<List<String>> getAllGrades() {
+        List<Summary> allSummaries = summaryService.getAllSummariesEntities();
+        List<String> grades = allSummaries.stream()
+            .map(Summary::getGrade)
+            .distinct()
+            .collect(Collectors.toList());
+        return new ResponseEntity<>(grades, HttpStatus.OK);
     }
 }
