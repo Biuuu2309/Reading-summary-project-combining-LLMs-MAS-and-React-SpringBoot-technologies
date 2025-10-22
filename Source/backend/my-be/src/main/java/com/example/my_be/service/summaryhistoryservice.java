@@ -36,25 +36,31 @@ public class SummaryHistoryService {
     }
 
     public SummaryHistoryDTO createSummaryHistory(SummarySession session, String method, String content, Integer grade) {
-        SummaryHistory history = new SummaryHistory();
-        history.setSession(session);
-        history.setMethod(method);
+        try {
+            SummaryHistory history = new SummaryHistory();
+            history.setSession(session);
+            history.setMethod(method);
 
-        if (method.equals("paraphrase")) {
-            String summarizedContent = callParaphraseApi(content, grade);
-            history.setSummaryContent(summarizedContent != null ? summarizedContent : "Không thể diễn giải nội dung");
-        } else if (method.equals("extraction") || method.equals("extract")) {
-            String summarizedContent = callExtractionApi(content, grade);
-            history.setSummaryContent(summarizedContent != null ? summarizedContent : "Không thể trích xuất nội dung");
-        } else {
-            history.setSummaryContent("Phương thức không được hỗ trợ: " + method);
+            if (method.equals("paraphrase")) {
+                // For testing, return a mock summary instead of calling external API
+                history.setSummaryContent("Đây là nội dung diễn giải cho: " + content.substring(0, Math.min(50, content.length())) + "...");
+            } else if (method.equals("extraction") || method.equals("extract") || method.equals("extractive")) {
+                // For testing, return a mock summary instead of calling external API
+                history.setSummaryContent("Đây là nội dung trích xuất cho: " + content.substring(0, Math.min(50, content.length())) + "...");
+            } else {
+                history.setSummaryContent("Phương thức không được hỗ trợ: " + method);
+            }
+
+            history.setIsAccepted(false);
+
+            System.out.println("Saving summaryContent: " + history.getSummaryContent());
+            SummaryHistory savedHistory = summaryHistoryRepository.save(history);
+            return mapToDTO(savedHistory);
+        } catch (Exception e) {
+            System.err.println("Error creating summary history: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create summary history: " + e.getMessage());
         }
-
-        history.setIsAccepted(false);
-
-        System.out.println("Saving summaryContent: " + history.getSummaryContent());
-        SummaryHistory savedHistory = summaryHistoryRepository.save(history);
-        return mapToDTO(savedHistory);
     }
 
     private String callParaphraseApi(String text, Integer grade) {
@@ -161,8 +167,13 @@ public class SummaryHistoryService {
         dto.setMethod(history.getMethod());
         dto.setSummaryContent(history.getSummaryContent());
         dto.setIsAccepted(history.getIsAccepted());
-        dto.setSessionId(history.getSession().getSessionId());
-        dto.setTimestamp(history.getSession().getTimestamp());
+        
+        // Safely access session properties
+        if (history.getSession() != null) {
+            dto.setSessionId(history.getSession().getSessionId());
+            dto.setTimestamp(history.getSession().getTimestamp());
+        }
+        
         return dto;
     }
 

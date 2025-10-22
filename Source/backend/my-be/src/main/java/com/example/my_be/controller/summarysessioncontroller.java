@@ -1,9 +1,12 @@
 package com.example.my_be.controller;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +23,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.example.my_be.model.SummarySession;
+import com.example.my_be.model.User;
+import com.example.my_be.service.SummarySessionService;
+import com.example.my_be.service.SummarySessionService.ImageUploadResult;
+import com.example.my_be.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.example.my_be.model.SummarySession;
-import com.example.my_be.service.SummarySessionService;
-import com.example.my_be.service.SummarySessionService.ImageUploadResult;
-
-import java.io.IOException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/summary-sessions")
@@ -41,6 +44,9 @@ public class SummarySessionController {
     @Autowired
     private SummarySessionService summarySessionService;
 
+    @Autowired
+    private UserService userService;
+
     // Inject the Gemini API key from application.properties
     private String geminiApiKey = System.getenv("GEMINI_API_KEY");
 
@@ -49,17 +55,46 @@ public class SummarySessionController {
 
     // Create a new summary session
     @PostMapping
-    public ResponseEntity<SummarySession> createSummarySession(@RequestBody SummarySession session) {
+    public ResponseEntity<SummarySession> createSummarySession(@RequestBody Map<String, Object> request) {
+        String userId = (String) request.get("userId");
+        String content = (String) request.get("content");
+        
+        if (userId == null || content == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
+        // Get user by ID
+        Optional<User> userOpt = userService.getUserById(userId);
+        if (userOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        // Create session
+        SummarySession session = new SummarySession();
+        session.setCreatedBy(userOpt.get());
+        session.setContent(content);
+        
         SummarySession createdSession = summarySessionService.createSummarySession(session);
         return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
     }
 
     // Get a summary session by ID
     @GetMapping("/{sessionId}")
-    public ResponseEntity<SummarySession> getSummarySessionById(@PathVariable Long sessionId) {
+    public ResponseEntity<Map<String, Object>> getSummarySessionById(@PathVariable Long sessionId) {
         Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
-        return sessionOpt.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (sessionOpt.isPresent()) {
+            SummarySession session = sessionOpt.get();
+            Map<String, Object> response = Map.of(
+                "sessionId", session.getSessionId(),
+                "content", session.getContent(),
+                "contentHash", session.getContentHash(),
+                "timestamp", session.getTimestamp(),
+                "userId", session.getCreatedBy().getUserId(),
+                "username", session.getCreatedBy().getUsername()
+            );
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.notFound().build();
     }
     @PostMapping("/process-pdf")
     public ResponseEntity<String> processPdf(@RequestParam("file") MultipartFile file) {
@@ -197,21 +232,39 @@ public class SummarySessionController {
     }
     
     @PutMapping("/{sessionId}")
-    public ResponseEntity<SummarySession> updateSummarySession(@PathVariable Long sessionId, @RequestBody SummarySession updatedSession) {
+    public ResponseEntity<Map<String, Object>> updateSummarySession(@PathVariable Long sessionId, @RequestBody Map<String, Object> request) {
+        String content = (String) request.get("content");
+        if (content == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
         if (sessionOpt.isPresent()) {
             SummarySession existingSession = sessionOpt.get();
-            existingSession.setContent(updatedSession.getContent());
+            existingSession.setContent(content);
             SummarySession updatedSessionEntity = summarySessionService.updateSummarySession(existingSession);
-            return ResponseEntity.ok(updatedSessionEntity);
+            
+            Map<String, Object> response = Map.of(
+                "sessionId", updatedSessionEntity.getSessionId(),
+                "content", updatedSessionEntity.getContent(),
+                "contentHash", updatedSessionEntity.getContentHash(),
+                "timestamp", updatedSessionEntity.getTimestamp(),
+                "userId", updatedSessionEntity.getCreatedBy().getUserId(),
+                "username", updatedSessionEntity.getCreatedBy().getUsername()
+            );
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/generate-image")
-    public ResponseEntity<ImageUploadResult> generateImageAndUploadToCloudinary(@RequestBody SummarySession session) {
-        String content = session.getContent();
+    public ResponseEntity<ImageUploadResult> generateImageAndUploadToCloudinary(@RequestBody Map<String, Object> request) {
+        String content = (String) request.get("content");
+        if (content == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         ImageUploadResult result = summarySessionService.generateImageAndUploadToCloudinary(content);
         return ResponseEntity.ok(result);
     }

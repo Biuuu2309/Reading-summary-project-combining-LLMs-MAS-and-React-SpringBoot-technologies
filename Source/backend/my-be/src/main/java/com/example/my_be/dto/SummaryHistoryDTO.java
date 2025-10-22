@@ -4,7 +4,7 @@ public class SummaryHistoryDTO {
     private Long historyId;
     private String method;
     private String summaryContent;
-    private Boolean isAccepted;
+    private boolean isAccepted;
     private Long sessionId; // Add this
     private String timestamp; // Add this
 
@@ -47,11 +47,11 @@ public class SummaryHistoryDTO {
         this.summaryContent = summaryContent;
     }
 
-    public Boolean getIsAccepted() {
+    public boolean getIsAccepted() {
         return isAccepted;
     }
 
-    public void setIsAccepted(Boolean isAccepted) {
+    public void setIsAccepted(boolean isAccepted) {
         this.isAccepted = isAccepted;
     }
 
