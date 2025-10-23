@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -77,8 +78,8 @@ public class SummarySessionService {
     }
 
     public class ImageUploadResult {
-        private String imageUrl;
-        private boolean success;
+        private final String imageUrl;
+        private final boolean success;
 
         public ImageUploadResult(String imageUrl, boolean success) {
             this.imageUrl = imageUrl;
@@ -94,9 +95,11 @@ public class SummarySessionService {
         }
     }
 
+    @Value("${gemini.api-key}")
+    private String geminiApiKey;
+
     public ImageUploadResult generateImageAndUploadToCloudinary(String content) {
-        String geminiApiKey = System.getenv("GEMINI_API_KEY");
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=" + geminiApiKey;
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=" + geminiApiKey;
 
         JSONObject request = new JSONObject();
         JSONObject contents = new JSONObject();
@@ -119,43 +122,52 @@ public class SummarySessionService {
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             System.out.println("API Gemini trả về thành công!");
+            System.out.println("Raw response: " + response.getBody());
             JSONObject jsonObject = new JSONObject(response.getBody());
             JSONArray candidates = jsonObject.getJSONArray("candidates");
             JSONObject candidate = candidates.getJSONObject(0);
             JSONObject contentObject = candidate.getJSONObject("content");
             JSONArray partsArray = contentObject.getJSONArray("parts");
-            JSONObject partObject = partsArray.getJSONObject(0);
-            JSONObject inlineData = partObject.getJSONObject("inlineData");
-            String base64Content = inlineData.getString("data");
+            JSONObject partObject = partsArray.getJSONObject(1);
+            
+            // Check if inlineData exists
+            if (partObject.has("inlineData")) {
+                JSONObject inlineData = partObject.getJSONObject("inlineData");
+                String base64Content = inlineData.getString("data");
 
-            System.out.println("Base64 hình ảnh đã được tạo: " + base64Content.substring(0, 100) + "...");
+                System.out.println("Base64 hình ảnh đã được tạo: " + base64Content.substring(0, 100) + "...");
 
-            byte[] decodedBytes = Base64.getDecoder().decode(base64Content);
-            File tempFile = null;
-            try {
-                tempFile = File.createTempFile("image", ".png");
-                try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                    fos.write(decodedBytes);
+                byte[] decodedBytes = Base64.getDecoder().decode(base64Content);
+                File tempFile = null;
+                try {
+                    tempFile = File.createTempFile("image", ".png");
+                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                        fos.write(decodedBytes);
+                    }
+
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> params = ObjectUtils.asMap(
+                            "use_filename", true,
+                            "unique_filename", false,
+                            "overwrite", true);
+
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> uploadResult = cloudinary.uploader().upload(tempFile, params);
+                    String imageUrl = (String) uploadResult.get("secure_url");
+                    System.out.println("URL hình ảnh trên Cloudinary: " + imageUrl);
+                    System.out.println("Hình ảnh đã được tải lên Cloudinary thành công!");
+                    return new ImageUploadResult(imageUrl, true);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to create or upload temporary file", e);
+                } finally {
+                    if (tempFile != null) {
+                        tempFile.delete();
+                    }
                 }
-
-                @SuppressWarnings("unchecked")
-                Map<String, Object> params = ObjectUtils.asMap(
-                        "use_filename", true,
-                        "unique_filename", false,
-                        "overwrite", true);
-
-                @SuppressWarnings("unchecked")
-                Map<String, Object> uploadResult = cloudinary.uploader().upload(tempFile, params);
-                String imageUrl = (String) uploadResult.get("secure_url");
-                System.out.println("URL hình ảnh trên Cloudinary: " + imageUrl);
-                System.out.println("Hình ảnh đã được tải lên Cloudinary thành công!");
-                return new ImageUploadResult(imageUrl, true);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create or upload temporary file", e);
-            } finally {
-                if (tempFile != null) {
-                    tempFile.delete();
-                }
+            } else {
+                System.out.println("No inlineData found in response. Response structure:");
+                System.out.println("Part object: " + partObject.toString());
+                return new ImageUploadResult(null, false);
             }
         } else {
             System.out.println("API Gemini trả về thất bại!");

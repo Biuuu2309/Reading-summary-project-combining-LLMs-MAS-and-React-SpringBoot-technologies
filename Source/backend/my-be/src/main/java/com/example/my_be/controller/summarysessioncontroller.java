@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,10 +49,11 @@ public class SummarySessionController {
     private UserService userService;
 
     // Inject the Gemini API key from application.properties
-    private String geminiApiKey = System.getenv("GEMINI_API_KEY");
+    @Value("${gemini.api-key}")
+    private String geminiApiKey;
 
     // Define the base Gemini API URL
-    private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+    private static final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
     // Create a new summary session
     @PostMapping
@@ -267,7 +269,7 @@ public class SummarySessionController {
         
         ImageUploadResult result = summarySessionService.generateImageAndUploadToCloudinary(content);
         return ResponseEntity.ok(result);
-    }
+    }  
 
     // New endpoint to upload an image to Cloudinary
     @PostMapping("/upload-image")
