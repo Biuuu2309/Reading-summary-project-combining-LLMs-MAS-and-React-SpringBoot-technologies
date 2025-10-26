@@ -274,6 +274,7 @@ public class SummarySessionController {
     // New endpoint to upload an image to Cloudinary
     @PostMapping("/upload-image")
     public ResponseEntity<ImageUploadResult> uploadImageToCloudinary(@RequestParam("file") MultipartFile file) {
+        System.out.println("=== UPLOAD ENDPOINT CALLED ===");
         System.out.println("Received upload request for file: " + file.getOriginalFilename() + ", Size: " + file.getSize());
         try {
             ImageUploadResult result = summarySessionService.uploadImageToCloudinary(file);

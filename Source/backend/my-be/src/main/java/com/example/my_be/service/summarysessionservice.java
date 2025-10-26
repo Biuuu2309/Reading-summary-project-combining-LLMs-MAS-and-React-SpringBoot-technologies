@@ -147,6 +147,7 @@ public class SummarySessionService {
 
                     @SuppressWarnings("unchecked")
                     Map<String, Object> params = ObjectUtils.asMap(
+                            "folder", "summary_sessions",
                             "use_filename", true,
                             "unique_filename", false,
                             "overwrite", true);
@@ -188,6 +189,7 @@ public class SummarySessionService {
             // Upload to Cloudinary
             @SuppressWarnings("unchecked")
             Map<String, Object> params = ObjectUtils.asMap(
+                    "folder", "summary_sessions",
                     "use_filename", true,
                     "unique_filename", false,
                     "overwrite", true);
