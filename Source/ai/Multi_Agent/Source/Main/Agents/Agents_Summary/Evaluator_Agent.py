@@ -20,11 +20,11 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 EVALUATOR_SYSTEM = """Bạn là Evaluator Agent chuyên nghiệp. Hãy:
-1. Đánh giá chất lượng tóm tắt và đưa ra thang điểm (0-10) dựa trên độ "dễ hiểu"
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+Đánh giá chất lượng tóm tắt và đưa ra thang điểm (0-10) dựa trên độ "dễ hiểu"
+"""
 
 def evaluator_agent(state: AgentState):
     messages = state["messages"]

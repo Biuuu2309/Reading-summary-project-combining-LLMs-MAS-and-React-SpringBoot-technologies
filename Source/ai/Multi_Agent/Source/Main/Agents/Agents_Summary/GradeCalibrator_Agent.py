@@ -20,11 +20,11 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 GRADE_CALIBRATOR_SYSTEM = """Bạn là Grade Calibrator Agent chuyên nghiệp. Hãy:
-1. Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp (1-5) nếu yêu cầu của user là bản tóm tắt diễn giải. Nếu là bản tóm tắt trích xuất, chỉ được điều chỉnh độ dài mà KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG.
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp (1-5) nếu yêu cầu của user là bản tóm tắt diễn giải. Nếu là bản tóm tắt trích xuất, chỉ được điều chỉnh độ dài mà KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG.
+"""
 
 def grade_calibrator_agent(state: AgentState):
     messages = state["messages"]

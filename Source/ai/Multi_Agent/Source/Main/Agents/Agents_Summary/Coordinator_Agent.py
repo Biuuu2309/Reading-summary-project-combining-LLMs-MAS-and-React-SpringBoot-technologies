@@ -21,17 +21,17 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 COORDINATOR_SYSTEM = """Bạn là Coordinator Agent thông minh giúp học sinh tiểu học tóm tắt văn bản tiếng Việt phù hợp với khối lớp (1-5). Nhiệm vụ:
 1. Phân tích yêu cầu user và chuyển cho agent phù hợp
 2. Agent Reader/OCR: Nhận văn bản từ hình ảnh/PDF và chuyển sang dạng text
-3. Agent Extractor: Trích xuất thông tin chính từ văn bản
-4. Agent Abstracter: Tóm tắt văn bản thành văn bản ngắn gọn
-5. Agent Grade Calibrator: Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp
-6. Agent Evaluator: Đánh giá chất lượng tóm tắt và đưa ra thang điểm (0-10) dựa trên độ "dễ hiểu"
-7. Agent Orchestrator: Điều phối pipeline, và xử lý lỗi nếu có
-8. Agent Aggregator: Tổng hợp tóm tắt và đưa ra kết quả cuối cùng
+3. Agent Spell Checker: Kiểm tra từ viết sai và sửa lại
+4. Agent Extractor: Trích xuất thông tin chính từ văn bản
+5. Agent Abstracter: Tóm tắt văn bản thành văn bản ngắn gọn
+6. Agent Grade Calibrator: Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp
+7. Agent Evaluator: Đánh giá chất lượng tóm tắt và đưa ra thang điểm (0-10) dựa trên độ "dễ hiểu"
+9. Agent Aggregator: Tổng hợp tóm tắt và đưa ra kết quả cuối cùng
 Luôn trả lời tự nhiên và hỏi user để xác nhận"""
 
 def coordinator_agent(state: AgentState):

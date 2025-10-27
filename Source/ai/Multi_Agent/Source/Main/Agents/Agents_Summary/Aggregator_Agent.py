@@ -20,11 +20,11 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 AGGREGATOR_SYSTEM = """Bạn là Aggregator Agent chuyên nghiệp. Hãy:
-1. Tổng hợp tóm tắt và đưa ra kết quả cuối cùng
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+Tùy thuộc vào thể loại tóm tắt TRÍCH XUẤT hay DIỄN GIẢI, bạn sẽ tổng hợp các bản tóm tắt thành bản tóm tắt cuối cùng theo cách phù hợp sao cho ngắn gọn, mạch lạc và dễ hiểu.
+"""
 
 def aggregator_agent(state: AgentState):
     messages = state["messages"]

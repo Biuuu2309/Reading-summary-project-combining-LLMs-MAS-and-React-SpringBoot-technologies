@@ -21,11 +21,10 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 OCR_SYSTEM = """Bạn là OCR Agent chuyên nghiệp. Hãy:
-1. Nhận văn bản từ hình ảnh/PDF và chuyển sang dạng text
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+Nhận văn bản từ hình ảnh/PDF và chuyển sang dạng text"""
 
 def ocr_agent(state: AgentState):
     messages = state["messages"]

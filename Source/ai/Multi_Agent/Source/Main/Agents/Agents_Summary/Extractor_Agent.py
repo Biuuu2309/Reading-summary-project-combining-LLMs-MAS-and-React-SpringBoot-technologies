@@ -20,11 +20,11 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
 EXTRACTOR_SYSTEM = """Bạn là Extractor Agent chuyên nghiệp. Hãy:
-1. Trích xuất thông tin, ý chính từ văn bản. Hay tóm tắt trích xuất và KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+Trích xuất thông tin, ý chính từ văn bản. Hay tóm tắt trích xuất và KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG
+"""
 
 def extractor_agent(state: AgentState):
     messages = state["messages"]

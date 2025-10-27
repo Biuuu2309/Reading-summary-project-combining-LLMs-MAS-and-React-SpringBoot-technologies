@@ -20,25 +20,25 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
-ABSTRACTER_SYSTEM = """Bạn là Abstracter Agent chuyên nghiệp. Hãy:
-1. Tóm tắt diễn giải văn bản thành văn bản ngắn gọn, dễ hiểu, phù hợp với khối lớp (1-5).
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+SPELLCHECKER_SYSTEM = """Bạn là Spell Checker Agent chuyên nghiệp. Hãy:
+Kiểm tra từ viết sai và sửa lại cho đúng hoàn cảnh ngữ nghĩa so với văn bản gốc. KHÔNG ĐƯỢC THÊM BỚT CÂU TỪ, NỘI DUNG.
+"""
 
-def abstracter_agent(state: AgentState):
+def spellchecker_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
     
     if not messages:
         query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
         context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{ABSTRACTER_SYSTEM}\n\nContext từ memory:\n{context}")]
+        prompt = [SystemMessage(content=f"{SPELLCHECKER_SYSTEM}\n\nContext từ memory:\n{context}")]
     else:
         query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
         context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
         prompt = [
-            SystemMessage(content=f"{ABSTRACTER_SYSTEM}\n\nContext từ memory:\n{context}"),
+            SystemMessage(content=f"{SPELLCHECKER_SYSTEM}\n\nContext từ memory:\n{context}"),
             *messages,
         ]
     
@@ -49,5 +49,5 @@ def abstracter_agent(state: AgentState):
         "messages": messages + [response],
         "current_agent": "coordinator_agent",
         "needs_user_input": True,
-        "conversation_stage": "abstracter"
+        "conversation_stage": "spellchecker"
     }

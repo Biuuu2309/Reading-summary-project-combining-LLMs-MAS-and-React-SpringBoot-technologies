@@ -20,25 +20,25 @@ class AgentState(TypedDict):
     messages: List[Any]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "extractor", "abstracter", "grade_calibrator", "evaluator", "orchestrator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
 
-ORCHESTRATOR_SYSTEM = """Bạn là Orchestrator Agent chuyên nghiệp. Hãy:
-1. Điều phối pipeline, và xử lý lỗi nếu có
-2. Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+ABSTRACTER_SYSTEM = """Bạn là Abstracter Agent chuyên nghiệp. Hãy:
+Tóm tắt diễn giải văn bản thành văn bản ngắn gọn, dễ hiểu, phù hợp với khối lớp (1-5) tùy theo người dùng yêu cầu.
+"""
 
-def orchestrator_agent(state: AgentState):
+def abstracter_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
     
     if not messages:
         query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
         context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{ORCHESTRATOR_SYSTEM}\n\nContext từ memory:\n{context}")]
+        prompt = [SystemMessage(content=f"{ABSTRACTER_SYSTEM}\n\nContext từ memory:\n{context}")]
     else:
         query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
         context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
         prompt = [
-            SystemMessage(content=f"{ORCHESTRATOR_SYSTEM}\n\nContext từ memory:\n{context}"),
+            SystemMessage(content=f"{ABSTRACTER_SYSTEM}\n\nContext từ memory:\n{context}"),
             *messages,
         ]
     
@@ -49,5 +49,5 @@ def orchestrator_agent(state: AgentState):
         "messages": messages + [response],
         "current_agent": "coordinator_agent",
         "needs_user_input": True,
-        "conversation_stage": "orchestrator"
+        "conversation_stage": "abstracter"
     }
