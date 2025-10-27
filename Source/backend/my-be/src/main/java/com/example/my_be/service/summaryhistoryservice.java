@@ -51,7 +51,7 @@ public class SummaryHistoryService {
                 history.setSummaryContent("Phương thức không được hỗ trợ: " + method);
             }
 
-            history.setIsAccepted(false);
+            history.setAccepted(false);
 
             System.out.println("Saving summaryContent: " + history.getSummaryContent());
             SummaryHistory savedHistory = summaryHistoryRepository.save(history);
@@ -166,7 +166,7 @@ public class SummaryHistoryService {
         dto.setHistoryId(history.getHistoryId());
         dto.setMethod(history.getMethod());
         dto.setSummaryContent(history.getSummaryContent());
-        dto.setIsAccepted(history.getIsAccepted());
+        dto.setIsAccepted(history.isAccepted());
         
         // Safely access session properties
         if (history.getSession() != null) {
@@ -182,7 +182,7 @@ public class SummaryHistoryService {
         history.setHistoryId(historyDTO.getHistoryId());
         history.setMethod(historyDTO.getMethod());
         history.setSummaryContent(historyDTO.getSummaryContent());
-        history.setIsAccepted(historyDTO.getIsAccepted());
+        history.setAccepted(historyDTO.getIsAccepted());
         return history;
     }
 }

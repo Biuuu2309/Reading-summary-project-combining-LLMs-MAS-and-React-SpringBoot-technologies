@@ -62,12 +62,14 @@ public class SummaryHistoryController {
         } else {
             sessionToUse = summarySessionService.createSummarySession(session);
         }
+        
+        System.out.println("Session ID: " + sessionToUse.getSessionId());
 
         SummaryHistoryDTO historyDTO = summaryHistoryService.createSummaryHistory(
             sessionToUse, 
             request.getMethod(), 
             request.getContent(), 
-            request.getMethod().equals("paraphrase") ? request.getGrade() : null
+            request.getMethod().equals("T5_DIEN_GIAI") ? request.getGrade() : null
         );
         return ResponseEntity.ok(historyDTO);
     }

@@ -37,7 +37,7 @@ CREATE TABLE summaries (
 )
 
 CREATE TABLE summary_session (
-	session_id BIGINT,
+	session_id BIGINT AUTO_INCREMENT,
     content MEDIUMTEXT NOT NULL,
     created_by NVARCHAR(255),
     content_hash NVARCHAR(255) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE summary_session (
 )
 
 CREATE TABLE summary_history (
-	history_id BIGINT,
+	history_id BIGINT AUTO_INCREMENT,
     method NVARCHAR(255),
     summary_content MEDIUMTEXT NOT NULL,
     session_id BIGINT,
@@ -86,3 +86,17 @@ CREATE TABLE conversations (
 )
 
 ALTER TABLE read_history MODIFY id BIGINT NOT NULL AUTO_INCREMENT
+
+ALTER TABLE summary_history MODIFY COLUMN history_id BIGINT AUTO_INCREMENT;
+
+ALTER TABLE read_history MODIFY COLUMN id BIGINT AUTO_INCREMENT;
+
+ALTER TABLE summary_history DROP FOREIGN KEY summary_history_ibfk_1;
+
+ALTER TABLE summary_session MODIFY COLUMN session_id BIGINT AUTO_INCREMENT;
+ALTER TABLE summary_history MODIFY COLUMN history_id BIGINT AUTO_INCREMENT;
+
+ALTER TABLE summary_history 
+ADD CONSTRAINT summary_history_ibfk_1 
+FOREIGN KEY (session_id) REFERENCES summary_session(session_id) 
+ON UPDATE CASCADE ON DELETE CASCADE;

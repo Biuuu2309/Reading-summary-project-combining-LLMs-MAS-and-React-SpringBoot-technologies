@@ -37,5 +37,15 @@ public class SummaryHistory {
 
     @Column(nullable = false)
     private boolean isAccepted; 
+    
+    // Custom getter and setter for isAccepted
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+    
+    public void setAccepted(boolean accepted) {
+        this.isAccepted = accepted;
+    }
+    
     // Other relevant fields such as date of creation or modification can be added
 }

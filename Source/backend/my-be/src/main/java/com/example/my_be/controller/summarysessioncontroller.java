@@ -275,7 +275,13 @@ public class SummarySessionController {
     @PostMapping("/upload-image")
     public ResponseEntity<ImageUploadResult> uploadImageToCloudinary(@RequestParam("file") MultipartFile file) {
         System.out.println("=== UPLOAD ENDPOINT CALLED ===");
-        System.out.println("Received upload request for file: " + file.getOriginalFilename() + ", Size: " + file.getSize());
+        System.out.println("Received upload request for file: " + (file != null ? file.getOriginalFilename() : "null") + ", Size: " + (file != null ? file.getSize() : 0));
+        
+        if (file == null || file.isEmpty()) {
+            System.err.println("File is null or empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(summarySessionService.new ImageUploadResult(null, false));
+        }
+        
         try {
             ImageUploadResult result = summarySessionService.uploadImageToCloudinary(file);
             System.out.println("Upload successful, URL: " + result.getImageUrl());
@@ -283,8 +289,33 @@ public class SummarySessionController {
         } catch (Exception e) {
             System.err.println("Error uploading image: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(summarySessionService.new ImageUploadResult(null, false));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(summarySessionService.new ImageUploadResult(null, false));
+        }
+    }
+
+    // Alternative endpoint to handle different parameter names
+    @PostMapping("/upload-image-alt")
+    public ResponseEntity<ImageUploadResult> uploadImageToCloudinaryAlt(@RequestParam(value = "file", required = false) MultipartFile file,
+                                                                       @RequestParam(value = "image", required = false) MultipartFile image) {
+        System.out.println("=== UPLOAD ALT ENDPOINT CALLED ===");
+        
+        MultipartFile fileToUpload = file != null ? file : image;
+        
+        if (fileToUpload == null || fileToUpload.isEmpty()) {
+            System.err.println("No file provided in either 'file' or 'image' parameter");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(summarySessionService.new ImageUploadResult(null, false));
+        }
+        
+        System.out.println("Received upload request for file: " + fileToUpload.getOriginalFilename() + ", Size: " + fileToUpload.getSize());
+        
+        try {
+            ImageUploadResult result = summarySessionService.uploadImageToCloudinary(fileToUpload);
+            System.out.println("Upload successful, URL: " + result.getImageUrl());
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.err.println("Error uploading image: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(summarySessionService.new ImageUploadResult(null, false));
         }
     }
 
