@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.my_be.dto.SummaryHistoryDTO;
@@ -35,13 +36,14 @@ public class SummaryHistoryService {
         return createSummaryHistory(session, method, content, null);
     }
 
+    @Transactional
     public SummaryHistoryDTO createSummaryHistory(SummarySession session, String method, String content, Integer grade) {
         try {
             SummaryHistory history = new SummaryHistory();
             history.setSession(session);
             history.setMethod(method);
 
-            if (method.equals("paraphrase")) {
+            if (method.equals("paraphrase") || method.equals("T5_DIEN_GIAI")) {
                 // For testing, return a mock summary instead of calling external API
                 history.setSummaryContent("Đây là nội dung diễn giải cho: " + content.substring(0, Math.min(50, content.length())) + "...");
             } else if (method.equals("extraction") || method.equals("extract") || method.equals("extractive")) {
@@ -54,6 +56,8 @@ public class SummaryHistoryService {
             history.setAccepted(false);
 
             System.out.println("Saving summaryContent: " + history.getSummaryContent());
+            System.out.println("History: " + history);
+            System.out.println("Historyid: " + history.getHistoryId());
             SummaryHistory savedHistory = summaryHistoryRepository.save(history);
             return mapToDTO(savedHistory);
         } catch (Exception e) {

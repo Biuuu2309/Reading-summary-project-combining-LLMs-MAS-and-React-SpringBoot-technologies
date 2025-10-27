@@ -56,22 +56,41 @@ public class SummaryHistoryController {
         session.setContentHash(String.valueOf(request.getContent().hashCode()));
 
         Optional<SummarySession> existingSessionOpt = summarySessionService.getSummarySessionByUserAndContent(createdBy, request.getContent());
+        System.out.println("Existing Session isPresent: " + existingSessionOpt.isPresent());
         SummarySession sessionToUse;
         if (existingSessionOpt.isPresent()) {
             sessionToUse = existingSessionOpt.get();
         } else {
             sessionToUse = summarySessionService.createSummarySession(session);
+            System.out.println("Created new session, ID: " + sessionToUse.getSessionId());
+            
+            // Verify session was saved to database
+            Optional<SummarySession> verifySession = summarySessionService.getSummarySessionById(sessionToUse.getSessionId());
+            if (verifySession.isEmpty()) {
+                throw new RuntimeException("Session was not saved to database");
+            }
+            System.out.println("Session verified in database");
         }
         
-        System.out.println("Session ID: " + sessionToUse.getSessionId());
+        System.out.println("Final Session ID: " + sessionToUse.getSessionId());
+        System.out.println("Session object: " + sessionToUse);
 
-        SummaryHistoryDTO historyDTO = summaryHistoryService.createSummaryHistory(
-            sessionToUse, 
-            request.getMethod(), 
-            request.getContent(), 
-            request.getMethod().equals("T5_DIEN_GIAI") ? request.getGrade() : null
-        );
-        return ResponseEntity.ok(historyDTO);
+        System.out.println("Method: " + request.getMethod());
+        System.out.println("Grade: " + request.getGrade());
+        
+        try {
+            SummaryHistoryDTO historyDTO = summaryHistoryService.createSummaryHistory(
+                sessionToUse, 
+                request.getMethod(), 
+                request.getContent(), 
+                request.getMethod().equals("T5_DIEN_GIAI") ? request.getGrade() : null
+            );
+            return ResponseEntity.ok(historyDTO);
+        } catch (Exception e) {
+            System.err.println("Error creating summary history: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Data
