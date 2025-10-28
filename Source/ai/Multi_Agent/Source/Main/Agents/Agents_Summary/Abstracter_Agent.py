@@ -51,3 +51,8 @@ def abstracter_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "abstracter"
     }
+abstracter_tool = Tool(
+    name="AbstracterAgent",
+    func=abstracter_agent,
+    description="Use this to abstract a given text. Input must be a text."
+)

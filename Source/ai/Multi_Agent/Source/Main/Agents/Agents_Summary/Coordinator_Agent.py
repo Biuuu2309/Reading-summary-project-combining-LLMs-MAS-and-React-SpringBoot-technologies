@@ -101,3 +101,9 @@ def coordinator_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": state.get("conversation_stage", "greeting")
     }
+    
+coordinator_tool = Tool(
+    name="CoordinatorAgent",
+    func=coordinator_agent,
+    description="Use this to get current coordinator for a given task. Input must be a task name."
+)

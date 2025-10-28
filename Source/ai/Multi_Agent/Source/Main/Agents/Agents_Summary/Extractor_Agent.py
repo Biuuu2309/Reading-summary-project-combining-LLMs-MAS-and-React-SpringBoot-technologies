@@ -51,3 +51,8 @@ def extractor_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "extractor"
     }
+extractor_tool = Tool(
+    name="ExtractorAgent",
+    func=extractor_agent,
+    description="Use this to extract a given text. Input must be a text."
+)

@@ -51,3 +51,8 @@ def spellchecker_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "spellchecker"
     }
+spellchecker_tool = Tool(
+    name="SpellCheckerAgent",
+    func=spellchecker_agent,
+    description="Use this to check the spelling of a given text. Input must be a text."
+)

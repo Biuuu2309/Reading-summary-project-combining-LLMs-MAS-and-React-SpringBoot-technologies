@@ -51,3 +51,8 @@ def aggregator_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "aggregator"
     }
+aggregator_tool = Tool(
+    name="AggregatorAgent",
+    func=aggregator_agent,
+    description="Use this to aggregate a given text. Input must be a text."
+)

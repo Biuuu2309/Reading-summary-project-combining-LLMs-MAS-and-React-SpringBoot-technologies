@@ -52,3 +52,8 @@ def ocr_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "reader_ocr"
     }
+ocr_tool = Tool(
+    name="OCRAgent",
+    func=ocr_agent,
+    description="Use this to OCR a given image. Input must be a image."
+)

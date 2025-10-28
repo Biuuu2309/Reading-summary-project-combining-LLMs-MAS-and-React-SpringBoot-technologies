@@ -51,3 +51,8 @@ def evaluator_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "evaluator"
     }
+evaluator_tool = Tool(
+    name="EvaluatorAgent",
+    func=evaluator_agent,
+    description="Use this to evaluate a given text. Input must be a text."
+)

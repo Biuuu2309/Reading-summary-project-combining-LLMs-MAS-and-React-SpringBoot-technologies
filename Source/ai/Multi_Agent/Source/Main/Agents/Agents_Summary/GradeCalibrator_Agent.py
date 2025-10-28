@@ -51,3 +51,8 @@ def grade_calibrator_agent(state: AgentState):
         "needs_user_input": True,
         "conversation_stage": "grade_calibrator"
     }
+grade_calibrator_tool = Tool(
+    name="GradeCalibratorAgent",
+    func=grade_calibrator_agent,
+    description="Use this to calibrate a given text. Input must be a text."
+)
