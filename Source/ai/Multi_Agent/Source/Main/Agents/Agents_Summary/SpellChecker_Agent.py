@@ -17,39 +17,57 @@ from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manage
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3:8b") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"
 class AgentState(TypedDict):
-    messages: List[Any]
+    messages: Annotated[List[Any], operator.add]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "text_input", "summary_type", "processing", "completed"]
+    original_text: str
+    summary_type: Literal["extract", "abstract", None]
+    grade_level: int
+    processed_text: str
+    summary_result: str
 
-SPELLCHECKER_SYSTEM = """Bạn là Spell Checker Agent chuyên nghiệp. Hãy:
-Kiểm tra từ viết sai và sửa lại cho đúng hoàn cảnh ngữ nghĩa so với văn bản gốc. KHÔNG ĐƯỢC THÊM BỚT CÂU TỪ, NỘI DUNG.
-"""
+SPELLCHECKER_SYSTEM = """Bạn là Spell Checker Agent chuyên nghiệp. Nhiệm vụ:
+1. Kiểm tra và sửa lỗi chính tả trong văn bản
+2. KHÔNG thay đổi nội dung, chỉ sửa lỗi chính tả
+3. Trả về văn bản đã được sửa"""
 
 def spellchecker_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
+    processed_text = state.get("processed_text", "")
     
-    if not messages:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{SPELLCHECKER_SYSTEM}\n\nContext từ memory:\n{context}")]
-    else:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [
-            SystemMessage(content=f"{SPELLCHECKER_SYSTEM}\n\nContext từ memory:\n{context}"),
-            *messages,
-        ]
+    if not processed_text:
+        response = AIMessage(content="Không có văn bản để kiểm tra chính tả.")
+        memory.add_message("assistant", response.content)
+        return {
+            "messages": [response],
+            "current_agent": "coordinator_agent",
+            "needs_user_input": True,
+            "conversation_stage": "text_input",
+            "original_text": state.get("original_text", ""),
+            "summary_type": None,
+            "grade_level": 0,
+            "processed_text": "",
+            "summary_result": ""
+        }
     
-    response = llm.invoke(prompt)
+    # Trong thực tế có thể có spell checker thật
+    corrected_text = processed_text  # Tạm thời giữ nguyên
+    
+    response = AIMessage(content=f"Văn bản đã được kiểm tra chính tả:\n\n{corrected_text}\n\nBây giờ hãy chọn loại tóm tắt:\n1. TRÍCH XUẤT (Extract): Giữ nguyên câu từ quan trọng\n2. DIỄN GIẢI (Abstract): Viết lại theo cách hiểu của bạn\n\nVà cho biết khối lớp (1-5):")
     memory.add_message("assistant", response.content)
     
     return {
-        "messages": messages + [response],
+        "messages": [response],
         "current_agent": "coordinator_agent",
         "needs_user_input": True,
-        "conversation_stage": "spellchecker"
+        "conversation_stage": "summary_type",
+        "original_text": state.get("original_text", ""),
+        "summary_type": None,
+        "grade_level": 0,
+        "processed_text": corrected_text,
+        "summary_result": ""
     }
 spellchecker_tool = Tool(
     name="SpellCheckerAgent",

@@ -18,88 +18,162 @@ from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manage
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3:8b") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"
 class AgentState(TypedDict):
-    messages: List[Any]
+    messages: Annotated[List[Any], operator.add]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "text_input", "summary_type", "processing", "completed"]
+    original_text: str
+    summary_type: Literal["extract", "abstract", None]
+    grade_level: int
+    processed_text: str
+    summary_result: str
 
-COORDINATOR_SYSTEM = """Bạn là Coordinator Agent thông minh giúp học sinh tiểu học tóm tắt văn bản tiếng Việt phù hợp với khối lớp (1-5). Nhiệm vụ:
-1. Phân tích yêu cầu user và chuyển cho agent phù hợp
-2. Agent Reader/OCR: Nhận văn bản từ hình ảnh/PDF và chuyển sang dạng text
-3. Agent Spell Checker: Kiểm tra từ viết sai và sửa lại
-4. Agent Extractor: Trích xuất thông tin chính từ văn bản
-5. Agent Abstracter: Tóm tắt văn bản thành văn bản ngắn gọn
-6. Agent Grade Calibrator: Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp
-7. Agent Evaluator: Đánh giá chất lượng tóm tắt và đưa ra thang điểm (0-10) dựa trên độ "dễ hiểu"
-9. Agent Aggregator: Tổng hợp tóm tắt và đưa ra kết quả cuối cùng
-Luôn trả lời tự nhiên và hỏi user để xác nhận"""
+COORDINATOR_SYSTEM = """Bạn là Coordinator Agent thông minh giúp học sinh tiểu học tóm tắt văn bản theo 2 cách (TRÍCH XUẤT và DIỄN GIẢI) phù hợp với khối lớp (1-5).
+
+Workflow của bạn:
+1. GREETING: Chào hỏi và yêu cầu user cung cấp văn bản
+2. TEXT_INPUT: Nhận văn bản từ user và chuyển cho OCR/SpellChecker để xử lý
+3. SUMMARY_TYPE: Hỏi user muốn tóm tắt TRÍCH XUẤT hay DIỄN GIẢI và khối lớp nào (1-5)
+4. PROCESSING: Phân công cho agent phù hợp (Extractor hoặc Abstracter)
+5. COMPLETED: Tổng hợp kết quả và hỏi đánh giá hệ thống
+
+Luôn trả lời ngắn gọn và đi thẳng vào vấn đề."""
 
 def coordinator_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
+    conversation_stage = state.get("conversation_stage", "greeting")
     
-    # Xử lý trường hợp messages rỗng
+    print(f"🔍 Coordinator Agent - Stage: {conversation_stage}, Messages: {len(messages)}")
+    
+    # Xử lý trường hợp messages rỗng - GREETING
     if not messages:
-        response = AIMessage(content="Xin chào! Tôi là trợ lý xưởng tóm tắt thông minh theo khối lớp. Tôi có thể giúp gì cho bạn?")
+        response = AIMessage(content="Xin chào! Tôi là trợ lý tóm tắt thông minh cho học sinh tiểu học.\n\nHãy cung cấp văn bản bạn muốn tóm tắt:")
         memory.add_message("assistant", response.content)
         return {
             "messages": [response],
-            "current_agent": "reader_ocr_agent",
+            "current_agent": "coordinator_agent",
             "needs_user_input": True,
-            "conversation_stage": "greeting"
+            "conversation_stage": "text_input",
+            "original_text": "",
+            "summary_type": None,
+            "grade_level": 0,
+            "processed_text": "",
+            "summary_result": "",
+            "final_result": ""
         }
     
     last_message = messages[-1]
-    
-    if state.get("needs_user_input", False):
-        return state
     
     if isinstance(last_message, HumanMessage):
         user_input = last_message.content
         memory.add_message("user", user_input)
         
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=user_input)
-        prompt = [
-            SystemMessage(content=f"{COORDINATOR_SYSTEM}\n\nContext từ memory:\n{context}"),
-            *messages[:-1],
-            HumanMessage(content=user_input)
-        ]
+        print(f"👤 User input: {user_input}")
+        print(f"📊 Conversation stage: {conversation_stage}")
         
-        response = llm.invoke(prompt)
-        memory.add_message("assistant", response.content)
-        
-        # Xác định agent tiếp theo
-        content = response.content.lower()
-        if any(x in content for x in ["đọc", "nhập", "reader", "ocr", "hình ảnh", "pdf", "văn bản", "file"]):
-            next_agent = "reader_ocr_agent"
-        elif any(x in content for x in ["trích xuất", "extractor", "extract", "extract_information", "trích", "ý chính", "nội dung chính"]):
-            next_agent = "extractor_agent"
-        elif any(x in content for x in ["tóm tắt", "tóm tắt ngắn gọn", "viết lại ngắn gọn", "diễn giải", "abstract", "abstracter", "summarize", "summarize_text", "summarize_data"]):
-            next_agent = "abstracter_agent"
-        elif any(x in content for x in ["điều chỉnh", "calibrate", "grade_calibrator", "chỉnh độ dài", "adjust_length", "adjust_vocabulary", "theo khối lớp"]):
-            next_agent = "grade_calibrator_agent"
-        elif any(x in content for x in ["đánh giá", "evaluate", "evaluator", "evaluate_summary", "evaluate_quality", "evaluate_understandability"]):
-            next_agent = "evaluator_agent"
-        elif any(x in content for x in ["điều phối", "orchestrate", "orchestrator", "orchestrate_pipeline", "orchestrate_process", "orchestrate_flow", "xử lý lỗi", "handle_error", "handle_exception", "handle_failure"]):
-            next_agent = "orchestrator_agent"
-        elif any(x in content for x in ["tổng hợp", "aggregate", "aggregator", "aggregate_summary", "aggregate_result", "aggregate_output", "tổng kết", "tổng hợp kết quả", "tổng hợp ý chính"]):
-            next_agent = "aggregator_agent"
-        else:
-            next_agent = "coordinator_agent"
+        # Xử lý theo từng giai đoạn
+        if conversation_stage == "text_input":
+            # Lưu văn bản gốc và chuyển sang xử lý OCR/SpellChecker
+            response = AIMessage(content="Văn bản đã được nhận! Đang xử lý...")
+            memory.add_message("assistant", response.content)
+            return {
+                "messages": [response],
+                "current_agent": "reader_ocr_agent",
+                "needs_user_input": False,
+                "conversation_stage": "text_input",
+                "original_text": user_input,
+                "summary_type": None,
+                "grade_level": 0,
+                "processed_text": "",
+                "summary_result": "",
+                "final_result": ""
+            }
             
+        elif conversation_stage == "summary_type":
+            # Phân tích yêu cầu về loại tóm tắt và khối lớp
+            content = user_input.lower()
+            if "trích xuất" in content or "extract" in content or "1" in content:
+                summary_type = "extract"
+            elif "diễn giải" in content or "abstract" in content or "2" in content:
+                summary_type = "abstract"
+            else:
+                summary_type = "extract"  # Mặc định
+            
+            # Tìm khối lớp
+            grade_level = 3  # Mặc định lớp 3
+            for i in range(1, 6):
+                if str(i) in content:
+                    grade_level = i
+                    break
+            
+            response = AIMessage(content=f"Đã xác nhận: Tóm tắt {summary_type} cho lớp {grade_level}. Đang xử lý...")
+            memory.add_message("assistant", response.content)
+            
+            return {
+                "messages": [response],
+                "current_agent": "coordinator_agent",
+                "needs_user_input": False,
+                "conversation_stage": "processing",
+                "original_text": state.get("original_text", ""),
+                "summary_type": summary_type,
+                "grade_level": grade_level,
+                "processed_text": state.get("processed_text", ""),
+                "summary_result": "",
+                "final_result": ""
+            }
+            
+        elif conversation_stage == "completed":
+            # Xử lý đánh giá từ user
+            if "tốt" in user_input.lower() or "hay" in user_input.lower() or "được" in user_input.lower():
+                response = AIMessage(content="Cảm ơn bạn đã đánh giá tích cực! Hệ thống sẽ tiếp tục cải thiện.")
+            else:
+                response = AIMessage(content="Cảm ơn bạn đã đánh giá! Hệ thống sẽ tiếp tục cải thiện.")
+            
+            memory.add_message("assistant", response.content)
+            return {
+                "messages": [response],
+                "current_agent": "coordinator_agent",
+                "needs_user_input": True,
+                "conversation_stage": "greeting",
+                "original_text": "",
+                "summary_type": None,
+                "grade_level": 0,
+                "processed_text": "",
+                "summary_result": "",
+                "final_result": ""
+            }
+    
+    # Xử lý khi nhận kết quả từ Aggregator Agent
+    elif conversation_stage == "processing" and state.get("final_result"):
+        final_result = state.get("final_result", "")
+        response = AIMessage(content=f"🎉 **KẾT QUẢ TÓM TẮT**\n\n{final_result}\n\n---\n\nBạn có hài lòng với bản tóm tắt này không? Hãy đánh giá hệ thống:")
+        memory.add_message("assistant", response.content)
         return {
-            "messages": messages + [response],
-            "current_agent": next_agent,
+            "messages": [response],
+            "current_agent": "coordinator_agent",
             "needs_user_input": True,
-            "conversation_stage": state.get("conversation_stage", "reader_ocr")
+            "conversation_stage": "completed",
+            "original_text": state.get("original_text", ""),
+            "summary_type": state.get("summary_type", None),
+            "grade_level": state.get("grade_level", 0),
+            "processed_text": state.get("processed_text", ""),
+            "summary_result": state.get("summary_result", ""),
+            "final_result": final_result
         }
     
     # Trường hợp không phải HumanMessage
     return {
-        "messages": messages,
+        "messages": [],
         "current_agent": "coordinator_agent",
         "needs_user_input": True,
-        "conversation_stage": state.get("conversation_stage", "greeting")
+        "conversation_stage": conversation_stage,
+        "original_text": state.get("original_text", ""),
+        "summary_type": state.get("summary_type", None),
+        "grade_level": state.get("grade_level", 0),
+        "processed_text": state.get("processed_text", ""),
+        "summary_result": state.get("summary_result", ""),
+        "final_result": state.get("final_result", "")
     }
     
 coordinator_tool = Tool(

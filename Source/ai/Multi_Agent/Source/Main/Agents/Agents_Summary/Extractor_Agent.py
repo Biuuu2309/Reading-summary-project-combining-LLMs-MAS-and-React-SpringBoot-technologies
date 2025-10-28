@@ -17,39 +17,61 @@ from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manage
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3:8b") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"
 class AgentState(TypedDict):
-    messages: List[Any]
+    messages: Annotated[List[Any], operator.add]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "text_input", "summary_type", "processing", "completed"]
+    original_text: str
+    summary_type: Literal["extract", "abstract", None]
+    grade_level: int
+    processed_text: str
+    summary_result: str
 
-EXTRACTOR_SYSTEM = """Bạn là Extractor Agent chuyên nghiệp. Hãy:
-Trích xuất thông tin, ý chính từ văn bản. Hay tóm tắt trích xuất và KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG
-"""
+EXTRACTOR_SYSTEM = """Bạn là Extractor Agent chuyên nghiệp. Nhiệm vụ:
+1. Trích xuất thông tin quan trọng từ văn bản
+2. KHÔNG thay đổi câu từ, chỉ lấy những phần quan trọng nhất
+3. Trả về bản tóm tắt trích xuất ngắn gọn"""
 
 def extractor_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
+    processed_text = state.get("processed_text", "")
+    grade_level = state.get("grade_level", 3)
     
-    if not messages:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{EXTRACTOR_SYSTEM}\n\nContext từ memory:\n{context}")]
-    else:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [
-            SystemMessage(content=f"{EXTRACTOR_SYSTEM}\n\nContext từ memory:\n{context}"),
-            *messages,
-        ]
+    if not processed_text:
+        response = AIMessage(content="Không có văn bản để trích xuất.")
+        memory.add_message("assistant", response.content)
+        return {
+            "messages": [response],
+            "current_agent": "coordinator_agent",
+            "needs_user_input": True,
+            "conversation_stage": "text_input",
+            "original_text": state.get("original_text", ""),
+            "summary_type": None,
+            "grade_level": 0,
+            "processed_text": "",
+            "summary_result": ""
+        }
+    
+    context = memory_manager.get_context_summary(include_long_term=True, current_input=processed_text)
+    prompt = [
+        SystemMessage(content=f"{EXTRACTOR_SYSTEM}\n\nContext từ memory:\n{context}\n\nVăn bản cần trích xuất:\n{processed_text}\n\nKhối lớp: {grade_level}"),
+        HumanMessage(content=f"Hãy trích xuất thông tin quan trọng từ văn bản trên cho học sinh lớp {grade_level}")
+    ]
     
     response = llm.invoke(prompt)
     memory.add_message("assistant", response.content)
     
     return {
-        "messages": messages + [response],
-        "current_agent": "coordinator_agent",
-        "needs_user_input": True,
-        "conversation_stage": "extractor"
+        "messages": [response],
+        "current_agent": "grade_calibrator_agent",
+        "needs_user_input": False,
+        "conversation_stage": "processing",
+        "original_text": state.get("original_text", ""),
+        "summary_type": "extract",
+        "grade_level": grade_level,
+        "processed_text": processed_text,
+        "summary_result": response.content
     }
 extractor_tool = Tool(
     name="ExtractorAgent",

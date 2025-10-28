@@ -18,39 +18,57 @@ from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manage
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3:8b") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"
 class AgentState(TypedDict):
-    messages: List[Any]
+    messages: Annotated[List[Any], operator.add]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "text_input", "summary_type", "processing", "completed"]
+    original_text: str
+    summary_type: Literal["extract", "abstract", None]
+    grade_level: int
+    processed_text: str
+    summary_result: str
 
-OCR_SYSTEM = """Bạn là OCR Agent chuyên nghiệp. Hãy:
-Nhận văn bản từ hình ảnh/PDF và chuyển sang dạng text"""
+OCR_SYSTEM = """Bạn là OCR Agent chuyên nghiệp. Nhiệm vụ:
+1. Nhận văn bản từ user và chuyển thành dạng text chuẩn
+2. Trả về văn bản đã được xử lý
+3. Luôn trả lời ngắn gọn và đi thẳng vào vấn đề"""
 
 def ocr_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
+    original_text = state.get("original_text", "")
     
-    # Đảm bảo có ít nhất 1 message
-    if not messages:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{OCR_SYSTEM}\n\nContext từ memory:\n{context}")]
-    else:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [
-            SystemMessage(content=f"{OCR_SYSTEM}\n\nContext từ memory:\n{context}"),
-            *messages,
-        ]
+    if not original_text:
+        response = AIMessage(content="Không có văn bản để xử lý.")
+        memory.add_message("assistant", response.content)
+        return {
+            "messages": [response],
+            "current_agent": "coordinator_agent",
+            "needs_user_input": True,
+            "conversation_stage": "text_input",
+            "original_text": "",
+            "summary_type": None,
+            "grade_level": 0,
+            "processed_text": "",
+            "summary_result": ""
+        }
     
-    response = llm.invoke(prompt)
+    # Xử lý văn bản (trong thực tế có thể có OCR thật)
+    processed_text = original_text.strip()
+    
+    response = AIMessage(content=f"Văn bản đã được xử lý:\n\n{processed_text}\n\nBây giờ hãy chọn loại tóm tắt:\n1. TRÍCH XUẤT (Extract): Giữ nguyên câu từ quan trọng\n2. DIỄN GIẢI (Abstract): Viết lại theo cách hiểu của bạn\n\nVà cho biết khối lớp (1-5):")
     memory.add_message("assistant", response.content)
     
     return {
-        "messages": messages + [response],
+        "messages": [response],
         "current_agent": "coordinator_agent",
         "needs_user_input": True,
-        "conversation_stage": "reader_ocr"
+        "conversation_stage": "summary_type",
+        "original_text": original_text,
+        "summary_type": None,
+        "grade_level": 0,
+        "processed_text": processed_text,
+        "summary_result": ""
     }
 ocr_tool = Tool(
     name="OCRAgent",

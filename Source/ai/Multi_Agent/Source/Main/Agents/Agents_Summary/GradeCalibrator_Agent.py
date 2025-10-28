@@ -17,39 +17,62 @@ from Source.ai.Multi_Agent.Source.Main.Memory.memory.memory import memory_manage
 # Khởi tạo model LLM Local từ Ollama
 llm = ChatOllama(model="llama3:8b") # <-- Sử dụng model bạn đã kéo về, ví dụ "llama3", "mistral"
 class AgentState(TypedDict):
-    messages: List[Any]
+    messages: Annotated[List[Any], operator.add]
     current_agent: str
     needs_user_input: bool
-    conversation_stage: Literal["greeting", "reader_ocr", "spellchecker", "extractor", "abstracter", "grade_calibrator", "evaluator", "aggregator", "completed"]
+    conversation_stage: Literal["greeting", "text_input", "summary_type", "processing", "completed"]
+    original_text: str
+    summary_type: Literal["extract", "abstract", None]
+    grade_level: int
+    processed_text: str
+    summary_result: str
 
-GRADE_CALIBRATOR_SYSTEM = """Bạn là Grade Calibrator Agent chuyên nghiệp. Hãy:
-Điều chỉnh độ dài và từ vựng phù hợp theo khối lớp (1-5) nếu yêu cầu của user là bản tóm tắt diễn giải. Nếu là bản tóm tắt trích xuất, chỉ được điều chỉnh độ dài mà KHÔNG THAY ĐỔI CÂU TỪ, NỘI DUNG.
-"""
+GRADE_CALIBRATOR_SYSTEM = """Bạn là Grade Calibrator Agent chuyên nghiệp. Nhiệm vụ:
+1. Điều chỉnh độ dài và từ vựng phù hợp với khối lớp (1-5)
+2. Nếu là trích xuất: chỉ điều chỉnh độ dài, KHÔNG thay đổi câu từ
+3. Nếu là diễn giải: có thể điều chỉnh từ vựng cho phù hợp với khối lớp"""
 
 def grade_calibrator_agent(state: AgentState):
     messages = state["messages"]
     memory = memory_manager.get_memory()
+    summary_result = state.get("summary_result", "")
+    summary_type = state.get("summary_type", "extract")
+    grade_level = state.get("grade_level", 3)
     
-    if not messages:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [SystemMessage(content=f"{GRADE_CALIBRATOR_SYSTEM}\n\nContext từ memory:\n{context}")]
-    else:
-        query = next((m.content for m in reversed(messages) if isinstance(m, HumanMessage)), "")
-        context = memory_manager.get_context_summary(include_long_term=True, current_input=query)
-        prompt = [
-            SystemMessage(content=f"{GRADE_CALIBRATOR_SYSTEM}\n\nContext từ memory:\n{context}"),
-            *messages,
-        ]
+    if not summary_result:
+        response = AIMessage(content="Không có bản tóm tắt để điều chỉnh.")
+        memory.add_message("assistant", response.content)
+        return {
+            "messages": [response],
+            "current_agent": "coordinator_agent",
+            "needs_user_input": True,
+            "conversation_stage": "text_input",
+            "original_text": state.get("original_text", ""),
+            "summary_type": None,
+            "grade_level": 0,
+            "processed_text": "",
+            "summary_result": ""
+        }
+    
+    context = memory_manager.get_context_summary(include_long_term=True, current_input=summary_result)
+    prompt = [
+        SystemMessage(content=f"{GRADE_CALIBRATOR_SYSTEM}\n\nContext từ memory:\n{context}\n\nBản tóm tắt:\n{summary_result}\n\nLoại: {summary_type}\nKhối lớp: {grade_level}"),
+        HumanMessage(content=f"Hãy điều chỉnh bản tóm tắt {summary_type} cho phù hợp với học sinh lớp {grade_level}")
+    ]
     
     response = llm.invoke(prompt)
     memory.add_message("assistant", response.content)
     
     return {
-        "messages": messages + [response],
-        "current_agent": "coordinator_agent",
-        "needs_user_input": True,
-        "conversation_stage": "grade_calibrator"
+        "messages": [response],
+        "current_agent": "evaluator_agent",
+        "needs_user_input": False,
+        "conversation_stage": "processing",
+        "original_text": state.get("original_text", ""),
+        "summary_type": summary_type,
+        "grade_level": grade_level,
+        "processed_text": state.get("processed_text", ""),
+        "summary_result": response.content
     }
 grade_calibrator_tool = Tool(
     name="GradeCalibratorAgent",
