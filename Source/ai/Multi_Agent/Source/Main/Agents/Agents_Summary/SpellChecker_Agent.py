@@ -29,7 +29,7 @@ class AgentState(TypedDict):
 
 SPELLCHECKER_SYSTEM = """Bạn là Spell Checker Agent chuyên nghiệp. Nhiệm vụ:
 1. Kiểm tra và sửa lỗi chính tả trong văn bản
-2. KHÔNG thay đổi nội dung, chỉ sửa lỗi chính tả
+2. KHÔNG thay đổi nội dung, chỉ sửa lỗi chính tả, dấu câu, và các từ sai
 3. Trả về văn bản đã được sửa"""
 
 def spellchecker_agent(state: AgentState):
