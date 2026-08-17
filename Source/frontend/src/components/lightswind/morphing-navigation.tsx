@@ -100,6 +100,52 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
 
   const themeStyles = getThemeStyles();
 
+  const isElevated = isSticky || isMobile;
+  const isProminent = isMenuOpen;
+
+  const getSurfaceStyles = () => {
+    if (theme === "custom") {
+      return {
+        backgroundColor: isProminent
+          ? "rgba(255, 255, 255, 0.96)"
+          : isElevated
+            ? "rgba(255, 255, 255, 0.88)"
+            : backgroundColor,
+        color: isProminent || isElevated ? "#1e3a8a" : textColor,
+        borderColor: isProminent || isElevated ? "rgba(59, 130, 246, 0.95)" : borderColor,
+      };
+    }
+    return {
+      backgroundColor: undefined,
+      color: undefined,
+      borderColor: undefined,
+    };
+  };
+
+  const surfaceStyles = getSurfaceStyles();
+
+  const navSurfaceClass = cn({
+    "bg-white/90 border-blue-300/80 shadow-lg backdrop-blur-xl": isElevated && theme === "glass" && !isProminent,
+    "bg-white/96 border-blue-400/90 shadow-xl backdrop-blur-xl": isProminent && theme === "glass",
+    "bg-white/88 border-gray-300/90 shadow-lg backdrop-blur-xl": isElevated && theme === "light" && !isProminent,
+    "bg-white/96 border-gray-300 shadow-xl backdrop-blur-xl": isProminent && theme === "light",
+    "bg-black/85 border-gray-600 shadow-lg backdrop-blur-xl": isElevated && theme === "dark" && !isProminent,
+    "bg-black/92 border-gray-500 shadow-xl backdrop-blur-xl": isProminent && theme === "dark",
+    "shadow-lg backdrop-blur-xl": isElevated && theme === "custom" && !isProminent,
+    "shadow-xl backdrop-blur-xl": isProminent && theme === "custom",
+  });
+
+  const buttonSurfaceClass = cn({
+    "bg-white/92 border-blue-400/90": isElevated && (theme === "custom" || theme === "glass" || theme === "light"),
+    "bg-black/70 border-gray-500": isElevated && theme === "dark",
+    "bg-white/96 border-blue-500/95": isProminent && (theme === "custom" || theme === "glass" || theme === "light"),
+  });
+
+  const linkTextClass = cn({
+    "font-extrabold text-blue-900": isProminent || (isElevated && theme === "custom"),
+    "font-bold": !isProminent && !(isElevated && theme === "custom"),
+  });
+
   useEffect(() => {
     if (disableAutoMorph && !isMobile) return;
     const handleScroll = () => {
@@ -171,18 +217,21 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
     return () => document.removeEventListener("click", handleClickOutside);
   }, [isMenuOpen]);
 
-  const customStyles = {
-    backgroundColor: theme === "custom" ? backgroundColor : undefined,
-    color: theme === "custom" ? textColor : undefined,
-    borderColor: theme === "custom" ? borderColor : undefined,
-  };
+  const customStyles = surfaceStyles;
+
+  const linkColor =
+    theme === 'custom' && textColor
+      ? isProminent || isElevated
+        ? '#1e3a8a'
+        : textColor
+      : undefined;
 
   return (
     <>
       <AnimatePresence>
         {enablePageBlur && isMenuOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/35 backdrop-blur-md z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -204,6 +253,7 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
             "flex justify-center items-center mx-auto backdrop-blur-md border fixed",
             themeStyles.nav,
             themeStyles.text,
+            navSurfaceClass,
             {
               "left-1/2 -translate-x-1/2": !isMobile && !isSticky,
               "left-0 right-0": isMobile || isSticky,
@@ -252,9 +302,10 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="px-4 py-2.5 text-sm font-bold tracking-wide relative z-10 transition-transform duration-300 hover:scale-110"
+                  className="morphing-nav-link px-4 py-2.5 font-bold tracking-wide relative z-10 transition-transform duration-300 hover:scale-110"
+                  style={{ color: linkColor }}
                 >
-                  {link.icon && <span className="mr-2 inline-block">{link.icon}</span>}
+                  {link.icon && <span className="morphing-nav-icon">{link.icon}</span>}
                   {link.label}
                 </motion.a>
               ))}
@@ -265,6 +316,7 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
             className={cn(
               "absolute w-[60px] h-[60px] rounded-full outline-none border cursor-pointer border-4",
               themeStyles.button,
+              buttonSurfaceClass,
               {
                 hidden: !isSticky && !isMobile,
                 block: isMobile || isSticky,
@@ -274,10 +326,10 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
             transition={{ delay: isMobile || isSticky ? 0.2 : 0 }}
           >
             {customHamburgerIcon || (
-              <div className="flex flex-col items-center justify-center h-full">
-                <span className="block w-4 h-0.5 bg-black my-1 "></span>
-                <span className="block w-4 h-0.5 bg-black my-1 "></span>
-                <span className="block w-4 h-0.5 bg-black my-1 "></span>
+              <div className="flex flex-col items-center justify-center h-full text-blue-900">
+                <span className="block w-4 h-0.5 bg-current my-1"></span>
+                <span className="block w-4 h-0.5 bg-current my-1"></span>
+                <span className="block w-4 h-0.5 bg-current my-1"></span>
               </div>
             )}
           </motion.button>
@@ -295,9 +347,10 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
           >
             <motion.div
               className={cn(
-                "p-8 rounded-2xl backdrop-blur-md border w-11/12 max-w-sm",
+                "p-8 rounded-2xl backdrop-blur-xl border w-11/12 max-w-sm shadow-xl",
                 themeStyles.nav,
-                themeStyles.text
+                themeStyles.text,
+                navSurfaceClass
               )}
               style={customStyles}
               initial={{ opacity: 0 }}
@@ -310,9 +363,13 @@ export const MorphingNavigation: React.FC<MorphingNavigationProps> = ({
                     key={link.id}
                     href={link.href}
                     onClick={(e) => handleLinkClick(link, e)}
-                    className="font-bold text-lg tracking-wide hover:scale-105 transition-transform"
+                    className={cn(
+                      "morphing-nav-menu-link text-lg tracking-wide hover:scale-105 transition-transform",
+                      linkTextClass
+                    )}
+                    style={{ color: linkColor }}
                   >
-                    {link.icon && <span className="inline-block mr-3">{link.icon}</span>}
+                    {link.icon && <span className="morphing-nav-icon">{link.icon}</span>}
                     {link.label}
                   </a>
                 ))}

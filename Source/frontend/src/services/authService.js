@@ -57,4 +57,5 @@ export async function register(userData) {
 
 export function logout() {
   setStoredUser(null);
+  sessionStorage.removeItem('guest_mas_session_id');
 }

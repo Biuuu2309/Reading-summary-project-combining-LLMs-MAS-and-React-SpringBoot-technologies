@@ -5,7 +5,7 @@ import { createConversation } from '../../../services/conversationApi';
 import { createMASSession } from '../../../services/masApi';
 import { parseChatResponse } from '../../../services/summaryService';
 import { createFromMas } from '../../../services/summaryHistoryApi';
-import { getCurrentUserId } from '../../../services/sessionService';
+import { getApiUserId } from '../../../services/sessionService';
 import { createSummarySession } from '../../../services/summarySessionApi';
 import { handleAPIError } from '../../../services/errorHandler';
 import SummaryResult from './SummaryResult';
@@ -17,7 +17,7 @@ const WELCOME_MESSAGE = {
   content: 'Xin chào! Tôi có thể giúp bạn tóm tắt văn bản. Hãy cho tôi biết bạn muốn tóm tắt theo cách nào (diễn giải hay trích xuất) và cấp lớp của bạn.',
 };
 
-export default function ChatboxMode({ summarySessionId, onSubmit, initialData }) {
+export default function ChatboxMode({ summarySessionId, onSubmit, initialData, persistHistory = false }) {
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,13 +52,13 @@ export default function ChatboxMode({ summarySessionId, onSubmit, initialData })
     setError(null);
     setIsLoading(true);
 
-    const userId = getCurrentUserId();
+    const userId = getApiUserId();
     let currentSummarySessionId = summarySessionId;
     let currentConvId = conversationId;
     let currentMasId = masSessionId;
 
     try {
-      if (!currentSummarySessionId) {
+      if (persistHistory && !currentSummarySessionId) {
         const created = await createSummarySession({ userId, content: '' });
         currentSummarySessionId = created.sessionId;
         if (onSubmit) {
@@ -97,26 +97,29 @@ export default function ChatboxMode({ summarySessionId, onSubmit, initialData })
       const nextMessages = [...messages, userMessage, assistantMessage];
       setMessages(nextMessages);
 
-      const summaryContent = parsed.summary || parsed.content || '';
-      const summaryImageUrl = typeof parsed.summaryImageUrl === 'string' ? parsed.summaryImageUrl : (parsed.summaryImageUrl ? JSON.stringify(parsed.summaryImageUrl) : null);
-      const evaluation = typeof parsed.evaluation === 'string' ? parsed.evaluation : (parsed.evaluation ? JSON.stringify(parsed.evaluation) : null);
+      if (persistHistory && currentSummarySessionId) {
+        const summaryContent = parsed.summary || parsed.content || '';
+        const summaryImageUrl = typeof parsed.summaryImageUrl === 'string' ? parsed.summaryImageUrl : (parsed.summaryImageUrl ? JSON.stringify(parsed.summaryImageUrl) : null);
+        const evaluation = typeof parsed.evaluation === 'string' ? parsed.evaluation : (parsed.evaluation ? JSON.stringify(parsed.evaluation) : null);
 
-      await createFromMas({
-        summarySessionId: currentSummarySessionId,
-        userInput: userContent,
-        summaryContent,
-        summaryImageUrl,
-        evaluation,
-        masSessionId: currentMasId,
-        conversationId: currentConvId,
-      });
+        await createFromMas({
+          summarySessionId: currentSummarySessionId,
+          userId,
+          userInput: userContent,
+          summaryContent,
+          summaryImageUrl,
+          evaluation,
+          masSessionId: currentMasId,
+          conversationId: currentConvId,
+        });
+      }
 
       if (onSubmit) {
         onSubmit({
           kind: 'message',
           message: userContent,
           messages: nextMessages,
-          summarySessionId: currentSummarySessionId,
+          summarySessionId: persistHistory ? currentSummarySessionId : null,
           conversationId: currentConvId,
           masSessionId: currentMasId,
           result: parsed,

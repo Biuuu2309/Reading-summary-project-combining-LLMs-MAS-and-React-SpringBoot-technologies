@@ -32,6 +32,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.my_be.model.SummarySession;
 import com.example.my_be.model.User;
 import com.example.my_be.repository.SummarySessionRepository;
+import com.example.my_be.util.TimestampUtils;
 
 @Service
 public class SummarySessionService {
@@ -58,6 +59,7 @@ public class SummarySessionService {
     public SummarySession createSummarySession(SummarySession session) {
         String contentHash = computeHash(session.getContent());
         session.setContentHash(contentHash);
+        session.setTimestamp(TimestampUtils.now());
         return summarySessionRepository.save(session);
     }
 

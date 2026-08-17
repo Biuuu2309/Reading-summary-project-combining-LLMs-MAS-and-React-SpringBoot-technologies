@@ -1,11 +1,11 @@
 package com.example.my_be.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.my_be.dto.SummaryHistoryDTO;
@@ -23,6 +24,7 @@ import com.example.my_be.model.User;
 import com.example.my_be.service.SummaryHistoryService;
 import com.example.my_be.service.SummarySessionService;
 import com.example.my_be.service.UserService;
+import com.example.my_be.util.TimestampUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,7 +54,7 @@ public class SummaryHistoryController {
         SummarySession session = new SummarySession();
         session.setCreatedBy(createdBy);
         session.setContent(request.getContent());
-        session.setTimestamp(new Date().toString());
+        session.setTimestamp(TimestampUtils.now());
         session.setContentHash(String.valueOf(request.getContent().hashCode()));
 
         Optional<SummarySession> existingSessionOpt = summarySessionService.getSummarySessionByUserAndContent(createdBy, request.getContent());
@@ -166,12 +168,17 @@ public class SummaryHistoryController {
     }
 
     @GetMapping("/session/{sessionId}")
-    public ResponseEntity<List<SummaryHistoryDTO>> getHistoriesBySession(@PathVariable Long sessionId) {
+    public ResponseEntity<List<SummaryHistoryDTO>> getHistoriesBySession(
+            @PathVariable Long sessionId,
+            @RequestParam(required = false) String userId) {
         Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(sessionId);
         if (sessionOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         SummarySession session = sessionOpt.get();
+        if (userId != null && !userId.equals(session.getCreatedBy().getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         List<SummaryHistory> histories = summaryHistoryService.findBySession(session);
         List<SummaryHistoryDTO> historyDTOs = histories.stream()
             .map(summaryHistoryService::mapToDTO)
@@ -191,6 +198,15 @@ public class SummaryHistoryController {
 
     @PostMapping("/create-from-mas")
     public ResponseEntity<SummaryHistoryDTO> createFromMas(@RequestBody CreateFromMasRequest request) {
+        if (request.getUserId() != null && request.getSummarySessionId() != null) {
+            Optional<SummarySession> sessionOpt = summarySessionService.getSummarySessionById(request.getSummarySessionId());
+            if (sessionOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            if (!request.getUserId().equals(sessionOpt.get().getCreatedBy().getUserId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
         SummaryHistoryDTO dto = summaryHistoryService.createSummaryHistoryFromMas(
             request.getSummarySessionId(),
             request.getUserInput(),
@@ -208,6 +224,7 @@ public class SummaryHistoryController {
     @AllArgsConstructor
     public static class CreateFromMasRequest {
         private Long summarySessionId;
+        private String userId;
         private String userInput;
         private String summaryContent;
         private String summaryImageUrl;

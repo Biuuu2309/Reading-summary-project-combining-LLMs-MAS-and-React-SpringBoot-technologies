@@ -1,3 +1,28 @@
 button {
-    border-color: transparent;
+  border-color: transparent;
+}
+
+.morphing-nav-link,
+.morphing-nav-menu-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  gap: 0.35rem;
+}
+
+.morphing-nav-link svg,
+.morphing-nav-menu-link svg {
+  flex-shrink: 0;
+  color: inherit;
+  stroke: currentColor;
+}
+
+.morphing-nav-link .morphing-nav-icon,
+.morphing-nav-menu-link .morphing-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.35rem;
 }

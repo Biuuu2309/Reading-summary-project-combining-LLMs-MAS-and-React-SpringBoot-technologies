@@ -1243,19 +1243,138 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T21:41:21.069317",
+        "input": {
+          "user_input_length": 1646,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 22.944048643112183,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "short"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T21:43:02.930344",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 22.033387422561646,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "long"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T23:09:28.625351",
+        "input": {
+          "user_input_length": 41,
+          "history_length": 0
+        },
+        "output": "Khi sinh con, hươu mẹ không nằm mà đứng. Hươu mẹ rất cao. Khi hươu con mỏi chân và nằm, hươu mẹ lại thúc con đứng lên. Lúc hươu con đứng được, hươu mẹ lại đẩy nó ngã để nó phải tự đứng dậy. Cứ như vậy",
+        "success": true,
+        "execution_time": 71.76548361778259,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f1970bfb-265e-43e4-b16e-26aec27107f0",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "extractive",
+            "grade_level": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T23:16:46.836623",
+        "input": {
+          "user_input_length": 62,
+          "history_length": 2
+        },
+        "output": "Trong văn bản cho học sinh lớp 5, cô bé có dáng người hút mít nhưng hái đậu đen thì không cần phải vui hay khéo léo, nên tôi phải đi hái. Khi qua sông ra đồng, tôi rất vui vì cảm giác mát lạnh và được",
+        "success": true,
+        "execution_time": 262.2848711013794,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f1970bfb-265e-43e4-b16e-26aec27107f0",
+          "intent": {
+            "summarization_type": "abstractive",
+            "intent": "summarize",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T23:19:59.236931",
+        "input": {
+          "user_input_length": 62,
+          "history_length": 4
+        },
+        "output": "Trong văn bản cho học sinh lớp 5, cô bé có dáng người hút mít nhưng hái đậu đen thì không cần phải vui hay khéo léo, nên tôi phải đi hái. Khi qua sông ra đồng, tôi rất vui vì cảm giác mát lạnh và được",
+        "success": true,
+        "execution_time": 223.70968532562256,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f1970bfb-265e-43e4-b16e-26aec27107f0",
+          "intent": {
+            "summarization_type": "abstractive",
+            "intent": "summarize",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T23:24:36.966653",
+        "input": {
+          "user_input_length": 62,
+          "history_length": 6
+        },
+        "output": "Trong văn bản cho học sinh lớp 5, cô bé có dáng người hút mít nhưng hái đậu đen thì không, vì không yêu cầu phải vui hay khéo léo, nên tôi phải đi hái. Khi qua sông ra đồng, tôi rất vui vì cảm giác má",
+        "success": true,
+        "execution_time": 207.62833881378174,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f1970bfb-265e-43e4-b16e-26aec27107f0",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 64,
-      "successful": 53,
+      "total_uses": 70,
+      "successful": 59,
       "failed": 11,
-      "success_rate": 0.828125,
+      "success_rate": 0.8428571428571429,
       "recent_success_rate": 1.0,
-      "avg_execution_time": 49.616611517965794,
-      "last_used": "2026-08-17T17:48:02.933861"
+      "avg_execution_time": 56.94041360105787,
+      "last_used": "2026-08-17T23:24:36.966653"
     }
   },
-  "updated_at": "2026-08-17T17:48:02.934413"
+  "updated_at": "2026-08-17T23:24:36.966653"
 }

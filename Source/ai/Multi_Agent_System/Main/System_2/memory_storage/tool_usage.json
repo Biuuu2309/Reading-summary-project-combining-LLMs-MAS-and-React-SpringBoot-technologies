@@ -2336,19 +2336,156 @@
             "intent": null
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T19:54:50.969038",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 22.722625255584717,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "bfffe88f-b089-4623-b5fe-56d37a8a1a2f",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:59:58.864575",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 22.78261637687683,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c7540d6c-315a-4efe-8075-5bba6a0687f0",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "long"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T20:00:27.548776",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 2
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 15.035290718078613,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c7540d6c-315a-4efe-8075-5bba6a0687f0",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T20:00:48.479291",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 4
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.774486064910889,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c7540d6c-315a-4efe-8075-5bba6a0687f0",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T20:01:39.482671",
+        "input": {
+          "user_input_length": 1646,
+          "history_length": 6
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 18.056809902191162,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c7540d6c-315a-4efe-8075-5bba6a0687f0",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "short"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T20:02:17.341830",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 8
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 5.3498170375823975,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c7540d6c-315a-4efe-8075-5bba6a0687f0",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T22:56:13.692541",
+        "input": {
+          "user_input_length": 134,
+          "history_length": 0
+        },
+        "output": "Nhạc sĩ Hoàng Long và Hoàng Lân là hai anh em song sinh, sinh ngày 18/06/1942 tại Vĩnh Yên và lớn lên ở Sơn Tây. Từ 14-15 tuổi, hai ông bắt đầu sáng tác âm nhạc và nhiều tác phẩm đã được phát trên són",
+        "success": true,
+        "execution_time": 135.75967073440552,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "52fdf759-c9a2-4cfe-b070-ab4cb82126f9",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 135,
-      "successful": 121,
-      "failed": 14,
-      "success_rate": 0.8962962962962963,
-      "recent_success_rate": 0.65,
-      "avg_execution_time": 50.51931823624505,
-      "last_used": "2026-08-17T19:47:54.773688"
+      "total_uses": 142,
+      "successful": 125,
+      "failed": 17,
+      "success_rate": 0.8802816901408451,
+      "recent_success_rate": 0.6,
+      "avg_execution_time": 49.609783647765575,
+      "last_used": "2026-08-17T22:56:13.692541"
     }
   },
-  "updated_at": "2026-08-17T19:47:54.773688"
+  "updated_at": "2026-08-17T22:56:13.692541"
 }

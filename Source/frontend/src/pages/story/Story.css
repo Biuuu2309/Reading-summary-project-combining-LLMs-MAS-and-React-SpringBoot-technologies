@@ -1,8 +1,27 @@
 .story-page {
+  position: relative;
   color: #fff;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.18), transparent 55%),
-    radial-gradient(900px 500px at 95% 10%, rgba(168, 85, 247, 0.16), transparent 50%);
+  min-height: 100vh;
+}
+
+.story-stars-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.story-page-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.story-page-content .morphing-nav-link,
+.story-page-content .morphing-nav-menu-link {
+  color: #f8fafc;
 }
 
 .story-wrap {
@@ -320,3 +339,26 @@
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.16);
 }
 
+.story-login-prompt {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+
+.story-login-prompt p {
+  margin: 0 0 8px;
+}
+
+.story-auth-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.story-btn-primary {
+  background: rgba(59, 130, 246, 0.85);
+  border-color: rgba(59, 130, 246, 0.9);
+}

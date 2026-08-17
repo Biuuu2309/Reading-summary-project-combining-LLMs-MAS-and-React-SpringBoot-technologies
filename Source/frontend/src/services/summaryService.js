@@ -10,21 +10,35 @@ import { chatWithMAS, createMASSession } from './masApi';
  * @param {string} data.text - Text to summarize
  * @returns {string} Formatted user input
  */
-function formatNormalModeInput(data) {
-  const { summaryType, gradeLevel, text } = data;
-  
-  let prompt = '';
-  
+export function formatNormalModeInput(data) {
+  const { summaryType, gradeLevel, lengthOption, text, inputMode } = data;
+  const fromImage = inputMode === 'image';
+
   if (summaryType === 'abstractive') {
-    prompt = 'Tóm tắt diễn giải';
+    const lengthLabel = {
+      short: 'ngắn',
+      medium: 'trung bình',
+      long: 'dài',
+    }[lengthOption || 'medium'];
+
+    let prompt = `Hãy tóm tắt diễn giải ${lengthLabel} văn bản sau`;
     if (gradeLevel) {
-      prompt += ` lớp ${gradeLevel}`;
+      prompt += ` theo lớp ${gradeLevel}`;
     }
-  } else if (summaryType === 'extractive') {
-    prompt = 'Tóm tắt trích xuất';
+    if (fromImage) {
+      return `${prompt} từ ảnh`;
+    }
+    return `${prompt}: ${text}`;
   }
-  
-  return `${prompt}: ${text}`;
+
+  if (summaryType === 'extractive') {
+    if (fromImage) {
+      return 'Hãy tóm tắt trích xuất văn bản sau từ ảnh';
+    }
+    return `Hãy tóm tắt trích xuất văn bản sau: ${text}`;
+  }
+
+  return text;
 }
 
 /**
@@ -45,6 +59,7 @@ export async function submitSummary({ userId, sessionId, conversationId, formDat
       sessionId: sessionId || null,
       conversationId: conversationId || null,
       userInput,
+      imageBase64: formData.imageBase64 || null,
     };
 
     const response = await chatWithMAS(request);

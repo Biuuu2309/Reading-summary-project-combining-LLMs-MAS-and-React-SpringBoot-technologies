@@ -10,6 +10,7 @@ public class MasChatRequest {
     private String userId;
     private String userInput;
     private String conversationId;
+    private String imageBase64;
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -22,6 +23,9 @@ public class MasChatRequest {
     public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
     public String getSessionId() {
         return sessionId;
     }
@@ -33,5 +37,8 @@ public class MasChatRequest {
     }
     public String getConversationId() {
         return conversationId;
+    }
+    public String getImageBase64() {
+        return imageBase64;
     }
 }

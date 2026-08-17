@@ -40,15 +40,19 @@ def chat():
         user_id = data.get('userId')
         user_input = data.get('userInput')
         conversation_id = data.get('conversationId')
+        image_base64 = data.get('imageBase64')
+        
+        if not user_input and not image_base64:
+            return jsonify({'error': 'userInput or imageBase64 is required'}), 400
         
         if not user_input:
-            return jsonify({'error': 'userInput is required'}), 400
+            user_input = 'Hãy tóm tắt văn bản từ ảnh'
         
         if not session_id:
             session_id = cm.create_session(user_id)
         
         # Use ConversationManager để có memory integration
-        chat_result = cm.chat(session_id, user_input)
+        chat_result = cm.chat(session_id, user_input, image_base64=image_base64)
         
         # Chat result có thể là dict (với memory_data và mas_state) hoặc string (backward compatibility)
         if isinstance(chat_result, dict):

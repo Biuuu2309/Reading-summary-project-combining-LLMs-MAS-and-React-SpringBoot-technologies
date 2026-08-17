@@ -88,33 +88,31 @@ export function AuroraTextEffect({
   return (
     <div
       className={cn(
-        // Updated to support light and dark modes
-        "bg-white dark:bg-black flex items-center justify-center overflow-hidden",
+        "inline-flex w-fit max-w-full items-center justify-center",
         className
       )}
     >
       <style>{keyframes /* This injects the keyframes into the DOM */}</style>
-      <div className="text-center">
-        <h2
-          className={cn(
-            // Added theme-aware text color for visibility
-            "font-extrabold tracking-tight relative overflow-hidden text-black dark:text-white",
-            textClassName
-          )}
-          style={{ fontSize }}
+      <h2
+        className={cn(
+          "relative m-0 inline-block overflow-hidden bg-white text-black dark:bg-black dark:text-white",
+          "font-extrabold tracking-tight",
+          textClassName
+        )}
+        style={{ fontSize }}
+      >
+        {text}
+        <div
+          className="absolute inset-0 z-10 mix-blend-lighten dark:mix-blend-darken pointer-events-none"
+          aria-hidden="true"
         >
-          {text}
+          {/* First Aurora Layer */}
           <div
-            // Switched blend mode based on theme to preserve the effect
-            className="absolute inset-0 z-10 mix-blend-lighten dark:mix-blend-darken pointer-events-none"
-          >
-            {/* First Aurora Layer */}
-            <div
-              className={cn(
-                "absolute w-[60vw] h-[60vw] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
-                colors.first || "bg-cyan-400",
-                blurAmount
-              )}
+            className={cn(
+              "absolute w-[220%] h-[220%] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
+              colors.first || "bg-cyan-400",
+              blurAmount
+            )}
               style={{
                 animationName: "aurora-border, aurora-1",
                 animationDuration: `${animationSpeed.border}s, ${animationSpeed.first}s`,
@@ -127,7 +125,7 @@ export function AuroraTextEffect({
             {/* Second Aurora Layer */}
             <div
               className={cn(
-                "absolute w-[60vw] h-[60vw] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
+                "absolute w-[220%] h-[220%] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
                 colors.second,
                 blurAmount
               )}
@@ -143,7 +141,7 @@ export function AuroraTextEffect({
             {/* Third Aurora Layer */}
             <div
               className={cn(
-                "absolute w-[60vw] h-[60vw] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
+                "absolute w-[220%] h-[220%] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
                 colors.third,
                 blurAmount
               )}
@@ -159,7 +157,7 @@ export function AuroraTextEffect({
             {/* Fourth Aurora Layer */}
             <div
               className={cn(
-                "absolute w-[60vw] h-[60vw] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
+                "absolute w-[220%] h-[220%] rounded-[37%_29%_27%_27%/28%_25%_41%_37%] filter mix-blend-overlay",
                 colors.fourth,
                 blurAmount
               )}
@@ -173,7 +171,6 @@ export function AuroraTextEffect({
             />
           </div>
         </h2>
-      </div>
     </div>
   );
 }

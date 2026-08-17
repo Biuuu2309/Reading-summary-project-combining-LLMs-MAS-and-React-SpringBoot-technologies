@@ -301,22 +301,42 @@
 .metric-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   background: #F9FAFB;
   border-radius: 6px;
   font-size: 0.8125rem;
+  min-width: 0;
+}
+
+.metric-item-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  grid-column: 1 / -1;
 }
 
 .metric-item-label {
   color: #6B7280;
   font-weight: 500;
   text-transform: capitalize;
+  flex-shrink: 0;
 }
 
 .metric-item-value {
   color: #1F2937;
   font-weight: 600;
+  min-width: 0;
+  text-align: right;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.metric-item-stacked .metric-item-value {
+  text-align: left;
+  font-weight: 500;
 }
 
 .result-evaluation {

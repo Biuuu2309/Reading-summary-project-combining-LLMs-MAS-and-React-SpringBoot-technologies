@@ -11,9 +11,10 @@ import ChatboxMode from './components/ChatboxMode';
 import Sidebar from './components/Sidebar';
 import { getStoredUser, logout } from '../../services/authService';
 import { User as UserIcon, LogOut, Bell } from 'lucide-react';
-import { getCurrentUserId } from '../../services/sessionService';
+import { getCurrentUserId, clearGuestSession } from '../../services/sessionService';
 import { createSummarySession, getSessionsByUser, deleteSummarySession } from '../../services/summarySessionApi';
 import { getHistoriesBySession } from '../../services/summaryHistoryApi';
+import { parseTimestamp } from '../../lib/utils';
 
 export default function Summary() {
   const navigate = useNavigate();
@@ -49,6 +50,12 @@ export default function Summary() {
     logout();
     setCurrentUser(null);
     setIsUserMenuOpen(false);
+    setChatSessions([]);
+    setActiveChatSession(null);
+    setSessionMessages(null);
+    setTempSessionId(null);
+    setActivityHistory([]);
+    clearGuestSession();
   }, []);
 
   // Handle navigation link clicks
@@ -65,27 +72,42 @@ export default function Summary() {
     // Other links will use default scroll behavior handled by MorphingNavigation
   }, [navigate]);
 
-  // Load activity history (read-only) on mount
+  const isAuthenticated = Boolean(currentUser?.userId);
+
+  // Load activity history (logged-in only)
   useEffect(() => {
-    const saved = localStorage.getItem('summary_sessions');
+    if (!currentUser?.userId) {
+      setActivityHistory([]);
+      return;
+    }
+    const saved = localStorage.getItem(`summary_activity_${currentUser.userId}`);
     if (saved) {
       try {
         setActivityHistory(JSON.parse(saved));
       } catch (e) {
         console.error('Failed to load activity history:', e);
       }
+    } else {
+      setActivityHistory([]);
     }
-  }, []);
+  }, [currentUser?.userId]);
 
   const pushActivity = useCallback((event) => {
+    if (!currentUser?.userId) return;
     const item = { id: Date.now().toString(), timestamp: new Date().toISOString(), ...event };
-    const next = [item, ...activityHistory].slice(0, 50);
-    setActivityHistory(next);
-    localStorage.setItem('summary_sessions', JSON.stringify(next));
-  }, [activityHistory]);
+    setActivityHistory((prev) => {
+      const next = [item, ...prev].slice(0, 50);
+      localStorage.setItem(`summary_activity_${currentUser.userId}`, JSON.stringify(next));
+      return next;
+    });
+  }, [currentUser?.userId]);
 
   const loadSessions = useCallback(async () => {
     const userId = getCurrentUserId();
+    if (!userId) {
+      setChatSessions([]);
+      return;
+    }
     const seq = ++loadSessionsSeqRef.current;
     try {
       const list = await getSessionsByUser(userId);
@@ -96,14 +118,24 @@ export default function Summary() {
   }, []);
 
   useEffect(() => {
-    loadSessions();
-  }, [loadSessions]);
+    if (isAuthenticated) {
+      loadSessions();
+    } else {
+      setChatSessions([]);
+      setActiveChatSession(null);
+      setSessionMessages(null);
+      setTempSessionId(null);
+      clearGuestSession();
+    }
+  }, [isAuthenticated, loadSessions]);
 
   const handleSelectChatSession = useCallback(async (session) => {
-    // If current active temp session unused, delete it
+    const userId = getCurrentUserId();
+    if (!userId) return;
+
     if (tempSessionId && activeChatSession?.sessionId === tempSessionId) {
       try {
-        await deleteSummarySession(tempSessionId);
+        await deleteSummarySession(tempSessionId, userId);
         setChatSessions((prev) => prev.filter((s) => s.sessionId !== tempSessionId));
       } catch (e) {
         console.warn('Auto delete temp session failed:', e);
@@ -115,7 +147,7 @@ export default function Summary() {
     setMode('chatbox');
     setIsSidebarOpen(false);
     try {
-      const histories = await getHistoriesBySession(session.sessionId);
+      const histories = await getHistoriesBySession(session.sessionId, userId);
       const built = [];
       let lastConvId = null;
       let lastMasId = null;
@@ -140,6 +172,7 @@ export default function Summary() {
 
   const handleNewChatSession = useCallback(async () => {
     const userId = getCurrentUserId();
+    if (!userId) return;
     try {
       const created = await createSummarySession({ userId, content: '' });
       const session = {
@@ -160,6 +193,9 @@ export default function Summary() {
   }, []);
 
   const handleDeleteChatSession = useCallback(async (summarySessionId) => {
+    const userId = getCurrentUserId();
+    if (!userId) return;
+
     const idNum = Number(summarySessionId);
     const idKey = String(idNum);
     if (deletingSessionIdsRef.current.has(idKey)) return;
@@ -178,7 +214,7 @@ export default function Summary() {
     if (Number(tempSessionId) === idNum) setTempSessionId(null);
 
     try {
-      await deleteSummarySession(idNum);
+      await deleteSummarySession(idNum, userId);
       loadSessions();
     } catch (e) {
       // Restore if API failed (e.g. FK constraints)
@@ -192,6 +228,7 @@ export default function Summary() {
   }, [activeChatSession?.sessionId, tempSessionId, loadSessions]);
 
   const handleNormalSubmit = useCallback((data) => {
+    if (!isAuthenticated) return;
     if (data?.kind === 'session_created') {
       const session = { sessionId: data.summarySessionId, content: '', timestamp: new Date().toString() };
       setChatSessions((prev) => [session, ...prev]);
@@ -211,9 +248,10 @@ export default function Summary() {
     });
     if (data.summarySessionId && tempSessionId === data.summarySessionId) setTempSessionId(null);
     loadSessions();
-  }, [pushActivity, loadSessions, tempSessionId]);
+  }, [pushActivity, loadSessions, tempSessionId, isAuthenticated]);
 
   const handleChatboxSubmit = useCallback((data) => {
+    if (!isAuthenticated) return;
     if (data?.kind === 'session_created') {
       const session = { sessionId: data.summarySessionId, content: '', timestamp: new Date().toString() };
       setChatSessions((prev) => [session, ...prev]);
@@ -232,10 +270,11 @@ export default function Summary() {
     loadSessions();
     // Once user sends first message, temp session becomes permanent
     if (tempSessionId && data.summarySessionId === tempSessionId) setTempSessionId(null);
-  }, [pushActivity, loadSessions]);
+  }, [pushActivity, loadSessions, tempSessionId, isAuthenticated]);
 
-  // Auto-delete temp session when switching away from chatbox
+  // Auto-delete temp session when switching away from chatbox (logged-in only)
   useEffect(() => {
+    if (!isAuthenticated) return;
     if (mode === 'chatbox') return;
     if (!tempSessionId) return;
     (async () => {
@@ -247,7 +286,7 @@ export default function Summary() {
       setChatSessions((prev) => prev.filter((s) => Number(s.sessionId) !== idNum));
       if (Number(activeChatSession?.sessionId) === idNum) setActiveChatSession(null);
       try {
-        await deleteSummarySession(idNum);
+        await deleteSummarySession(idNum, getCurrentUserId());
         loadSessions();
       } catch (e) {
         console.warn('Auto delete temp session failed:', e);
@@ -258,45 +297,43 @@ export default function Summary() {
         deletingSessionIdsRef.current.delete(idKey);
       }
     })();
-  }, [mode, tempSessionId, activeChatSession?.sessionId, loadSessions]);
+  }, [mode, tempSessionId, activeChatSession?.sessionId, loadSessions, isAuthenticated]);
 
-  // Auto-delete temp session when leaving page
+  // Auto-delete temp session when leaving page (logged-in only)
   useEffect(() => {
+    if (!isAuthenticated) return;
     return () => {
       const id = tempSessionId;
       if (!id) return;
-      // fire-and-forget
-      deleteSummarySession(id).catch(() => {});
+      const userId = getCurrentUserId();
+      if (!userId) return;
+      deleteSummarySession(id, userId).catch(() => {});
     };
-  }, [tempSessionId]);
+  }, [tempSessionId, isAuthenticated]);
 
   // Memoize links để tránh re-render không cần thiết
-  const navLinks = useMemo(() => [
-    { id: 'home', label: 'Home', href: '/', icon: <HomeIcon size={30} /> },
-    { id: 'summary', label: 'Summary', href: '/summary', icon: <BookOpen size={30} /> },
-    { id: 'story', label: 'Story', href: '/story', icon: <BookText size={30} /> },
-    { id: 'mas-flow', label: 'MAS Flow', href: '/mas-flow', icon: <Zap size={30} /> }
-  ], []);
+  const navLinks = useMemo(() => {
+    const links = [
+      { id: 'home', label: 'Home', href: '/', icon: <HomeIcon size={30} /> },
+      { id: 'summary', label: 'Summary', href: '/summary', icon: <BookOpen size={30} /> },
+    ];
+    if (currentUser?.userId) {
+      links.push({ id: 'story', label: 'Story', href: '/story', icon: <BookText size={30} /> });
+    }
+    links.push({ id: 'mas-flow', label: 'MAS Flow', href: '/mas-flow', icon: <Zap size={30} /> });
+    return links;
+  }, [currentUser?.userId]);
 
   return (
-    <div style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
-      <GravityStarsBackground 
-        className="gravity-stars-bg"
-        starsCount={100}
-        starsSize={4}
-        starsOpacity={0.8}
-        glowIntensity={20}
-        movementSpeed={0.4}
-        mouseInfluence={150}
-        mouseGravity="attract"
-        gravityStrength={100}
-      />
+    <div className="summary-page">
+      <GravityStarsBackground className="gravity-stars-bg" />
+      <div className="summary-page-content">
       <MorphingNavigation
         links={navLinks}
         theme="custom"
         backgroundColor="#ffffff00"
-        textColor="#0000ff"
-        borderColor="rgba(59, 130, 246, 0.9)"
+        textColor="#60a5fa"
+        borderColor="rgba(96, 165, 250, 0.55)"
         onLinkClick={handleLinkClick}
         scrollThreshold={150}
         animationDuration={1.5}
@@ -319,8 +356,9 @@ export default function Summary() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: '20px' }}>
         <img src="/images/logo.png" alt="" style={{ width: '80px', height: '80px' }} />
           <AuroraTextEffect
-            text="VUSUMMARY"
-            fontSize="clamp(3rem, 5vw, 3rem)"
+            text="MAS-VISUM"
+            fontSize="clamp(2.5rem, 4.5vw, 3rem)"
+            textClassName="home-brand-title"
             colors={{
               first: "bg-cyan-400",
               second: "bg-yellow-400",
@@ -334,7 +372,6 @@ export default function Summary() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginRight: '20px', position: 'relative' }}>
         {currentUser ? (
           <>
-            {/* Activity history bell (read-only) */}
             <button
               type="button"
               onClick={() => setIsHistoryOpen((v) => !v)}
@@ -479,7 +516,8 @@ export default function Summary() {
         </div>
       </div>
 
-      {/* Left Sidebar - ChatGPT style */}
+      {/* Left Sidebar - only when logged in */}
+      {isAuthenticated && (
       <Sidebar
         sessions={chatSessions}
         selectedSessionId={activeChatSession?.sessionId}
@@ -491,12 +529,13 @@ export default function Summary() {
         onClose={() => setIsSidebarOpen(false)}
         isOpen={isSidebarOpen}
       />
+      )}
 
       <div
         className={`summary-main-wrap ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
-        style={{ marginLeft: sidebarCollapsed ? '72px' : '280px' }}
+        style={{ marginLeft: isAuthenticated ? (sidebarCollapsed ? '72px' : '280px') : '0' }}
       >
-      {/* Mobile: menu button to open sidebar */}
+      {isAuthenticated && (
       <button
         type="button"
         className="summary-sidebar-toggle"
@@ -505,6 +544,7 @@ export default function Summary() {
       >
         <Menu size={22} />
       </button>
+      )}
 
       {/* Button Group - Bottom Right */}
       <div className="summary-bottom-actions">
@@ -567,14 +607,16 @@ export default function Summary() {
           <NormalMode
             onSubmit={handleNormalSubmit}
             initialData={null}
-            summarySessionId={activeChatSession?.sessionId ?? null}
+            summarySessionId={isAuthenticated ? (activeChatSession?.sessionId ?? null) : null}
+            persistHistory={isAuthenticated}
           />
         ) : (
           <ChatboxMode
-            summarySessionId={activeChatSession?.sessionId ?? null}
+            summarySessionId={isAuthenticated ? (activeChatSession?.sessionId ?? null) : null}
             onSubmit={handleChatboxSubmit}
+            persistHistory={isAuthenticated}
             initialData={
-              activeChatSession?.sessionId
+              isAuthenticated && activeChatSession?.sessionId
                 ? {
                     messages: sessionMessages ?? undefined,
                     conversationId: activeChatSession.conversationId ?? null,
@@ -584,6 +626,7 @@ export default function Summary() {
             }
           />
         )}
+      </div>
       </div>
       </div>
     </div>

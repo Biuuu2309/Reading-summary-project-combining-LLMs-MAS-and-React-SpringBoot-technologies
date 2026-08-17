@@ -1,9 +1,11 @@
 import { Plus, MessageSquare, Trash2, Clock, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { parseTimestamp } from '../../../lib/utils';
 import './Sidebar.css';
 
 function formatDate(date) {
   if (!date) return 'Không xác định';
-  const d = new Date(date);
+  const d = parseTimestamp(date);
+  if (!d) return 'Không xác định';
   const now = new Date();
   const diff = now - d;
   const minutes = Math.floor(diff / 60000);
@@ -33,7 +35,7 @@ export default function Sidebar({
   onClose,
 }) {
   const sortedSessions = [...sessions].sort(
-    (a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()
+    (a, b) => (parseTimestamp(b.timestamp)?.getTime() || 0) - (parseTimestamp(a.timestamp)?.getTime() || 0)
   );
 
   const handleDelete = (e, sessionId) => {
