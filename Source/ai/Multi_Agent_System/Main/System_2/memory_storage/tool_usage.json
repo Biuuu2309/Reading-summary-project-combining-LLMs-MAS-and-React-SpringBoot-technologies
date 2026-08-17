@@ -1926,19 +1926,193 @@
             "difficulty_action": "decrease"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T15:54:24.264009",
+        "input": {
+          "user_input_length": 1641,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 38.06789255142212,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "afaeb8a2-9f70-4a24-b4c3-207c27f15a71",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T15:59:00.610933",
+        "input": {
+          "user_input_length": 31,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh bà và mời bà m",
+        "success": true,
+        "execution_time": 53.08874464035034,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "afaeb8a2-9f70-4a24-b4c3-207c27f15a71",
+          "intent": {
+            "intent": "adjust_difficulty",
+            "difficulty_action": "decrease"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:04:06.155772",
+        "input": {
+          "user_input_length": 27,
+          "history_length": 4
+        },
+        "output": "Có một em nhỏ muốn gặp Thượng Đế, nên cậu chở theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh bà và mời bà mộ",
+        "success": true,
+        "execution_time": 149.72021770477295,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "afaeb8a2-9f70-4a24-b4c3-207c27f15a71",
+          "intent": {
+            "intent": "adjust_difficulty",
+            "difficulty_action": "increase"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:04:33.402738",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 6
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 10.756721019744873,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "afaeb8a2-9f70-4a24-b4c3-207c27f15a71",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:12:06.285294",
+        "input": {
+          "user_input_length": 1646,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 34.93785643577576,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c745312b-05a5-4b7a-8445-ce9d4aaad2ec",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "short"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:13:35.133781",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 30.36430311203003,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c745312b-05a5-4b7a-8445-ce9d4aaad2ec",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:13:44.663273",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 4
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.528481960296631,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c745312b-05a5-4b7a-8445-ce9d4aaad2ec",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:15:25.995775",
+        "input": {
+          "user_input_length": 1646,
+          "history_length": 6
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 29.106128931045532,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "c745312b-05a5-4b7a-8445-ce9d4aaad2ec",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:18:16.599667",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 30.748825311660767,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "82125b46-b7de-4140-b618-fb0cd638423e",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 114,
-      "successful": 107,
-      "failed": 7,
-      "success_rate": 0.9385964912280702,
-      "recent_success_rate": 1.0,
-      "avg_execution_time": 54.413417165739496,
-      "last_used": "2026-05-07T09:27:15.479570"
+      "total_uses": 123,
+      "successful": 114,
+      "failed": 9,
+      "success_rate": 0.926829268292683,
+      "recent_success_rate": 0.9,
+      "avg_execution_time": 53.53210348423904,
+      "last_used": "2026-08-17T16:18:16.599667"
     }
   },
-  "updated_at": "2026-05-07T09:27:15.479570"
+  "updated_at": "2026-08-17T16:18:16.599667"
 }

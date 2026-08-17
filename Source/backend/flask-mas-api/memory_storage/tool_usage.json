@@ -1065,19 +1065,98 @@
             "difficulty_action": "increase"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T15:10:50.187279",
+        "input": {
+          "user_input_length": 2148,
+          "history_length": 0
+        },
+        "output": "Chim trở lại cõng người em bay đi xa, qua núi non, biển cả và một hòn đảo đầy châu báu. Người em chỉ lấy đủ túi rồi xin trở về, từ đó cậu sống đàng hoàng và không còn khổ cực. Người anh tham lam đã dụ",
+        "success": true,
+        "execution_time": 82.53624129295349,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T15:13:03.419883",
+        "input": {
+          "user_input_length": 2170,
+          "history_length": 0
+        },
+        "output": "Ngày xửa ngày xưa, trong một ngôi làng nhỏ, có hai anh em sống nương tựa từ khi cha mẹ mất sớm. Cha mẹ để lại cho họ một ít tài sản để họ sống yên ổn. Tuy nhiên, người anh thì lười biếng, ham chơi, cò",
+        "success": true,
+        "execution_time": 17.861679553985596,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "368b03bc-af6e-40e8-85ca-9ca6b4be298b",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T15:34:48.294677",
+        "input": {
+          "user_input_length": 1615,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế. Cậu biết rằng phải đi cả một quãng đường rất dài mới có thể đến được nơi ở của Người, nên gói ghém mang theo bên mình những chiếc bánh Twinkie và cả sáu hộp nước trái",
+        "success": true,
+        "execution_time": 31.952943086624146,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "summarization_type": "extractive",
+            "grade_level": null,
+            "intent": "summarize"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T15:35:34.185048",
+        "input": {
+          "user_input_length": 1620,
+          "history_length": 4
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 31.92009949684143,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 55,
-      "successful": 44,
+      "total_uses": 59,
+      "successful": 48,
       "failed": 11,
-      "success_rate": 0.8,
+      "success_rate": 0.8135593220338984,
       "recent_success_rate": 1.0,
-      "avg_execution_time": 51.86447868347168,
-      "last_used": "2026-05-07T09:55:25.117455"
+      "avg_execution_time": 51.132496457988935,
+      "last_used": "2026-08-17T15:35:34.185048"
     }
   },
-  "updated_at": "2026-05-07T09:55:25.117455"
+  "updated_at": "2026-08-17T15:35:34.185048"
 }
