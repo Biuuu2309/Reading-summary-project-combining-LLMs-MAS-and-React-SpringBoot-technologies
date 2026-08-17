@@ -588,6 +588,27 @@
         "confidence": 0.3,
         "timestamp": "2026-04-29T18:25:44.828447",
         "metadata": {}
+      },
+      {
+        "fact": "Hãy tóm tắt diễn giải dài văn bản sau theo lớp 5: Có một cậu bé muốn gặp Thượng Đế. Cậu biết rằng phải đi cả một quãng đường rất dài mới có thể đến được nơi ở của Người, nên gói ghém mang theo bên mìn",
+        "source": "conversation_default_user",
+        "confidence": 0.3,
+        "timestamp": "2026-08-17T19:47:55.176621",
+        "metadata": {}
+      },
+      {
+        "fact": "Hãy tóm tắt diễn giải văn bản sau theo lớp 5: Có một cậu bé muốn gặp Thượng Đế. Cậu biết rằng phải đi cả một quãng đường rất dài mới có thể đến được nơi ở của Người, nên gói ghém mang theo bên mình nh",
+        "source": "conversation_default_user",
+        "confidence": 0.3,
+        "timestamp": "2026-08-17T19:47:55.178604",
+        "metadata": {}
+      },
+      {
+        "fact": "Hãy tóm tắt diễn giải văn bản sau theo lớp 5: Có một cậu bé muốn gặp Thượng Đế. Cậu biết rằng phải đi cả một quãng đường rất dài mới có thể đến được nơi ở của Người, nên gói ghém mang theo bên mình nh",
+        "source": "conversation_default_user",
+        "confidence": 0.3,
+        "timestamp": "2026-08-17T19:47:55.186698",
+        "metadata": {}
       }
     ]
   },
@@ -764,6 +785,14 @@
       },
       {
         "pattern": {
+          "content_length": 48
+        },
+        "frequency": 2,
+        "timestamp": "2026-08-17T19:47:55.189714",
+        "metadata": {}
+      },
+      {
+        "pattern": {
           "content_length": 863
         },
         "frequency": 1,
@@ -789,5 +818,5 @@
     ]
   },
   "domain_knowledge": {},
-  "updated_at": "2026-04-29T18:25:44.828447"
+  "updated_at": "2026-08-17T19:47:55.189714"
 }

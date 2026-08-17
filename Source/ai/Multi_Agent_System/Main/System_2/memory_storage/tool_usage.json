@@ -2199,19 +2199,156 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T19:27:48.919635",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 38.830613136291504,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "e4ed003f-0cd8-4438-9266-bbde8e416b6f",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:27:56.208824",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 2
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.395613431930542,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "e4ed003f-0cd8-4438-9266-bbde8e416b6f",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:44:30.678148",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 23.16669249534607,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f45db52a-e7aa-4ba2-bfac-c455b6e798c4",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:45:34.128643",
+        "input": {
+          "user_input_length": 1641,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 21.3714656829834,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f45db52a-e7aa-4ba2-bfac-c455b6e798c4",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:46:04.658794",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 4
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 15.173734188079834,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f45db52a-e7aa-4ba2-bfac-c455b6e798c4",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:47:22.148493",
+        "input": {
+          "user_input_length": 1641,
+          "history_length": 6
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 21.139805793762207,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f45db52a-e7aa-4ba2-bfac-c455b6e798c4",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T19:47:54.773688",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 8
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.765339612960815,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f45db52a-e7aa-4ba2-bfac-c455b6e798c4",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 128,
-      "successful": 117,
-      "failed": 11,
-      "success_rate": 0.9140625,
-      "recent_success_rate": 0.8,
-      "avg_execution_time": 52.27550544962287,
-      "last_used": "2026-08-17T17:02:04.029723"
+      "total_uses": 135,
+      "successful": 121,
+      "failed": 14,
+      "success_rate": 0.8962962962962963,
+      "recent_success_rate": 0.65,
+      "avg_execution_time": 50.51931823624505,
+      "last_used": "2026-08-17T19:47:54.773688"
     }
   },
-  "updated_at": "2026-08-17T17:02:04.029723"
+  "updated_at": "2026-08-17T19:47:54.773688"
 }

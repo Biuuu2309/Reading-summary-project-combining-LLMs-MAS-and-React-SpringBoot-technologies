@@ -1144,19 +1144,118 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T17:29:33.453668",
+        "input": {
+          "user_input_length": 1620,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang nhìn đàn chim. Cậu bé ngồi cạnh",
+        "success": true,
+        "execution_time": 39.69098734855652,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T17:30:26.489118",
+        "input": {
+          "user_input_length": 1615,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế. Cậu biết rằng phải đi cả một quãng đường rất dài mới có thể đến được nơi ở của Người, nên gói ghém mang theo bên mình những chiếc bánh Twinkie và cả sáu hộp nước trái",
+        "success": true,
+        "execution_time": 24.93792152404785,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "815f5881-92c8-4c13-b99d-5f500ba2053d",
+          "intent": {
+            "summarization_type": "extractive",
+            "grade_level": null,
+            "intent": "summarize"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T17:31:12.275869",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 29.985234260559082,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "d068b8f0-4dc8-47ce-b829-22e1893e55ef",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T17:39:32.821182",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 30.59657120704651,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "d068b8f0-4dc8-47ce-b829-22e1893e55ef",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T17:48:02.933861",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 4
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 33.435131788253784,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "d068b8f0-4dc8-47ce-b829-22e1893e55ef",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 59,
-      "successful": 48,
+      "total_uses": 64,
+      "successful": 53,
       "failed": 11,
-      "success_rate": 0.8135593220338984,
+      "success_rate": 0.828125,
       "recent_success_rate": 1.0,
-      "avg_execution_time": 51.132496457988935,
-      "last_used": "2026-08-17T15:35:34.185048"
+      "avg_execution_time": 49.616611517965794,
+      "last_used": "2026-08-17T17:48:02.933861"
     }
   },
-  "updated_at": "2026-08-17T15:35:34.185048"
+  "updated_at": "2026-08-17T17:48:02.934413"
 }
