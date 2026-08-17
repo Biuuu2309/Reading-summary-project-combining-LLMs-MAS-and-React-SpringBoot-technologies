@@ -2100,19 +2100,118 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-17T16:53:57.753225",
+        "input": {
+          "user_input_length": 1646,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 37.40617847442627,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "8a3e7f00-30a5-4585-ad99-707d3d6dbbd2",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "image_path": null,
+            "length_option": "short"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:55:24.794259",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 2
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 28.39906930923462,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "8a3e7f00-30a5-4585-ad99-707d3d6dbbd2",
+          "intent": {
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "intent": "summarize",
+            "length_option": "medium"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:55:42.975211",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 4
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.215830564498901,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "8a3e7f00-30a5-4585-ad99-707d3d6dbbd2",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": "unknown"
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T16:59:14.500437",
+        "input": {
+          "user_input_length": 0,
+          "history_length": 6
+        },
+        "output": "Lỗi: Không tìm thấy bước tóm tắt trong kế hoạch.",
+        "success": false,
+        "execution_time": 4.398630380630493,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "8a3e7f00-30a5-4585-ad99-707d3d6dbbd2",
+          "intent": {
+            "summarization_type": null,
+            "grade_level": null,
+            "intent": null
+          }
+        }
+      },
+      {
+        "timestamp": "2026-08-17T17:02:04.029723",
+        "input": {
+          "user_input_length": 1645,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 32.396260261535645,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "81a03ef4-fdb8-4ad9-a204-cd46bf8cd192",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 123,
-      "successful": 114,
-      "failed": 9,
-      "success_rate": 0.926829268292683,
-      "recent_success_rate": 0.9,
-      "avg_execution_time": 53.53210348423904,
-      "last_used": "2026-08-17T16:18:16.599667"
+      "total_uses": 128,
+      "successful": 117,
+      "failed": 11,
+      "success_rate": 0.9140625,
+      "recent_success_rate": 0.8,
+      "avg_execution_time": 52.27550544962287,
+      "last_used": "2026-08-17T17:02:04.029723"
     }
   },
-  "updated_at": "2026-08-17T16:18:16.599667"
+  "updated_at": "2026-08-17T17:02:04.029723"
 }
