@@ -1362,19 +1362,39 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-08-18T10:53:58.028919",
+        "input": {
+          "user_input_length": 1652,
+          "history_length": 0
+        },
+        "output": "Có một cậu bé muốn gặp Thượng Đế, nên cậu mang theo bánh Twinkie và nước trái cây để bắt đầu hành trình. Trên đường đi, cậu gặp một bà lão ngồi trong công viên, bà đang ngắm chim bồ câu. Cậu bé ngồi c",
+        "success": true,
+        "execution_time": 26.820964336395264,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "fec8224f-3154-45d8-9d46-88a8aba6df1c",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "abstractive",
+            "grade_level": 5,
+            "length_option": "medium"
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 70,
-      "successful": 59,
+      "total_uses": 71,
+      "successful": 60,
       "failed": 11,
-      "success_rate": 0.8428571428571429,
+      "success_rate": 0.8450704225352113,
       "recent_success_rate": 1.0,
-      "avg_execution_time": 56.94041360105787,
-      "last_used": "2026-08-17T23:24:36.966653"
+      "avg_execution_time": 56.516196005780934,
+      "last_used": "2026-08-18T10:53:58.028919"
     }
   },
-  "updated_at": "2026-08-17T23:24:36.966653"
+  "updated_at": "2026-08-18T10:53:58.028919"
 }
