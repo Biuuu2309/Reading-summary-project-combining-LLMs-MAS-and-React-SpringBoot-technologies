@@ -1382,19 +1382,38 @@
             "length_option": "medium"
           }
         }
+      },
+      {
+        "timestamp": "2026-09-03T16:20:16.354546",
+        "input": {
+          "user_input_length": 41,
+          "history_length": 0
+        },
+        "output": "Tất cả những con vật trong rừng đều sợ răng của hổ, chỉ trừ cáo. Nó nói: Tầu đức vua đáng kính của tôi, tôi mang đến cho ngài một món ăn ngon đây. Đây là đường. Từ đó, cáo thường xuyên đến thăm và lần",
+        "success": true,
+        "execution_time": 131.2457287311554,
+        "agent_name": "mas_system",
+        "context": {
+          "session_id": "f1970bfb-265e-43e4-b16e-26aec27107f0",
+          "intent": {
+            "intent": "summarize",
+            "summarization_type": "extractive",
+            "grade_level": null
+          }
+        }
       }
     ]
   },
   "stats": {
     "mas_graph": {
-      "total_uses": 71,
-      "successful": 60,
+      "total_uses": 72,
+      "successful": 61,
       "failed": 11,
-      "success_rate": 0.8450704225352113,
+      "success_rate": 0.8472222222222222,
       "recent_success_rate": 1.0,
-      "avg_execution_time": 56.516196005780934,
-      "last_used": "2026-08-18T10:53:58.028919"
+      "avg_execution_time": 57.55410618252225,
+      "last_used": "2026-09-03T16:20:16.354546"
     }
   },
-  "updated_at": "2026-08-18T10:53:58.028919"
+  "updated_at": "2026-09-03T16:20:16.355052"
 }
